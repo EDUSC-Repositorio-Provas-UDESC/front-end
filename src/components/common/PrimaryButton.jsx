@@ -1,0 +1,43 @@
+import React from 'react';
+import { Button, CircularProgress } from '@mui/material';
+
+export default function PrimaryButton({
+    children,
+    endIcon,
+    loading = false,
+    disabled = false,
+    sx = {},
+    ...props
+}) {
+    return (
+        <Button
+            variant="contained"
+            fullWidth
+            disabled={disabled || loading}
+            endIcon={!loading ? endIcon : null}
+            sx={{
+                backgroundColor: '#006b47',
+                color: '#ffffff',
+                borderRadius: '7px',
+                padding: '9px 18px',
+                fontSize: '14px',
+                fontWeight: 600,
+                textTransform: 'none',
+                boxShadow: 'none',
+                height: '40px',
+                '&:hover': {
+                    backgroundColor: '#005236',
+                    boxShadow: 'none',
+                },
+                '&.Mui-disabled': {
+                    backgroundColor: '#80b5a3',
+                    color: '#ffffff',
+                },
+                ...sx,
+            }}
+            {...props}
+        >
+            {loading ? <CircularProgress size={20} color="inherit" /> : children}
+        </Button>
+    );
+}

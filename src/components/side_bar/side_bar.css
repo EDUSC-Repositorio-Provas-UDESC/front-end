@@ -1,0 +1,236 @@
+/* ==========================================================================
+   SideBar - Barra de Navegação Lateral (UDESC Estuda)
+   ========================================================================== */
+
+.sidebar-container {
+    width: 200px;
+    min-width: 200px;
+    height: 100vh;
+    background-color: #f9fbfa;
+    border-right: 1px solid #e2ebe6;
+    padding: 24px 14px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    user-select: none;
+    transition: transform 0.3s ease;
+}
+
+/* Cabeçalho / Logo */
+.sidebar-header {
+    display: flex;
+    flex-direction: column;
+    padding: 0 8px;
+}
+
+.sidebar-logo {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    color: #005c3b;
+    font-weight: 800;
+}
+
+.sidebar-logo span {
+    font-weight: 400;
+    color: #006b47;
+}
+
+.sidebar-subtitle {
+    margin-top: 5px;
+    font-size: 8.5px;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #6b8579;
+    text-transform: uppercase;
+}
+
+/* Divisor Horizontal */
+.sidebar-divider.MuiDivider-root {
+    margin: 16px 0;
+    border-color: #dce6e1;
+}
+
+/* Perfil do Usuário */
+.sidebar-account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 6px;
+}
+
+.sidebar-account-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.sidebar-avatar.MuiAvatar-root {
+    width: 34px;
+    height: 34px;
+    background-color: #e6f2ec;
+    color: #006b47;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+.sidebar-user-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sidebar-user-name {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1e2923;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-user-role {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    font-weight: 400;
+    color: #6b7f75;
+    line-height: 1.2;
+}
+
+.sidebar-logout-btn.MuiIconButton-root {
+    color: #7b8f85;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-logout-btn.MuiIconButton-root:hover {
+    background-color: #e8f3ed;
+    color: #006b47;
+}
+
+/* Seção de Navegação (MEU ESPAÇO) */
+.sidebar-menu-section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 18px;
+    flex: 1;
+}
+
+.sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: #6e8479;
+    text-transform: uppercase;
+    margin: 0 0 10px 14px;
+}
+
+.sidebar-nav-list.MuiList-root {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0;
+}
+
+.sidebar-nav-item.MuiListItem-root {
+    padding: 0;
+}
+
+.sidebar-nav-button.MuiListItemButton-root {
+    border-radius: 10px;
+    padding: 8px 12px;
+    gap: 12px;
+    transition: all 0.2s ease;
+    color: #5a6e64;
+}
+
+.sidebar-nav-button.MuiListItemButton-root:hover {
+    background-color: #eff6f2;
+}
+
+.sidebar-nav-button.MuiListItemButton-root.active,
+.sidebar-nav-button.MuiListItemButton-root.Mui-selected {
+    background-color: #e8f3ed;
+    color: #006b47;
+}
+
+.sidebar-nav-button.MuiListItemButton-root.active:hover,
+.sidebar-nav-button.MuiListItemButton-root.Mui-selected:hover {
+    background-color: #dff0e6;
+}
+
+.sidebar-nav-icon.MuiListItemIcon-root {
+    min-width: unset;
+    color: #687d73;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.sidebar-nav-icon.MuiListItemIcon-root svg {
+    font-size: 18px;
+}
+
+.sidebar-nav-button.active .sidebar-nav-icon.MuiListItemIcon-root,
+.sidebar-nav-button.Mui-selected .sidebar-nav-icon.MuiListItemIcon-root {
+    color: #006b47;
+}
+
+.sidebar-nav-text .MuiListItemText-primary {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: inherit;
+    line-height: 1.3;
+}
+
+.sidebar-nav-button.active .sidebar-nav-text .MuiListItemText-primary,
+.sidebar-nav-button.Mui-selected .sidebar-nav-text .MuiListItemText-primary {
+    font-weight: 700;
+    color: #006b47;
+}
+
+/* Barra Mobile e Responsividade */
+.sidebar-mobile-header {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar-desktop {
+        display: none;
+    }
+
+    .sidebar-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 60px;
+        padding: 0 16px;
+        background-color: #f9fbfa;
+        border-bottom: 1px solid #e2ebe6;
+        box-sizing: border-box;
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+    }
+
+    .sidebar-mobile-header .sidebar-logo {
+        font-size: 20px;
+    }
+
+    .sidebar-drawer-paper .sidebar-container {
+        width: 230px;
+        height: 100%;
+        border-right: none;
+    }
+}

@@ -1,0 +1,47 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 50px;
+    padding: 0 40px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.header-breadcrumbs .MuiBreadcrumbs-separator {
+    margin: 0 10px;
+    color: #6b7280;
+}
+
+.header-breadcrumbs .header-breadcrumb-link.MuiLink-root,
+.header-breadcrumbs .header-breadcrumb-current.MuiTypography-root {
+    font-size: 12.5px;
+    color: #6b7280;
+}
+
+.header-date {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+}
+
+.header-divider.MuiDivider-root {
+    border-color: #e5e7eb;
+    margin-right: 18px;
+}
+
+.header-date-text.MuiTypography-root {
+    font-size: 12.5px;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 0 16px;
+        height: 56px;
+    }
+}
