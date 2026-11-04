@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import SideSectionJoinSite from '../components/side_section_join_site/side_section_join_site';
+import SideSectionJoinSite from '../components/sideSectionJoinSite/sideSectionJoinSite';
 import ComboBox from '../components/common/ComboBox';
 import loginService from '../services/loginService';
 
@@ -25,7 +25,7 @@ function Sigin() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [course, setCourse] = useState('cct-cc');
+    const [course, setCourse] = useState('');
     const [role, setRole] = useState('aluno');
     const [termsAccepted, setTermsAccepted] = useState(true);
     const [roleTeacher, setRoleTeacher] = useState(false);
@@ -205,7 +205,6 @@ function Sigin() {
                             autoComplete="email"
                             required
                             helperIcon={<CheckOutlinedIcon sx={{ fontSize: '13px', color: '#006b47' }} />}
-                            helperText="E-mail em formato válido."
                             helperColor="#006b47"
                         />
 
@@ -215,7 +214,6 @@ function Sigin() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••••••"
                             autoComplete="new-password"
                             required
                             helperText="Use ao menos 8 caracteres, incluindo letras e números."
@@ -379,29 +377,6 @@ function Sigin() {
                             </Box>
                         )}
 
-                        {/* Checkbox de Termos e Privacidade */}
-                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '6px', marginTop: '2px' }}>
-                            <Checkbox
-                                checked={termsAccepted}
-                                onChange={(e) => setTermsAccepted(e.target.checked)}
-                                size="small"
-                                sx={{
-                                    padding: '1px 0 0 0',
-                                    color: '#9ca3af',
-                                    '&.Mui-checked': { color: '#006b47' },
-                                }}
-                            />
-                            <Typography
-                                sx={{
-                                    fontSize: '11px',
-                                    color: '#374151',
-                                    lineHeight: 1.35,
-                                }}
-                            >
-                                Li e aceito os Termos de uso e a Política de privacidade. Comprometo-me a compartilhar apenas materiais autorizados.
-                            </Typography>
-                        </Box>
-
                         {/* Botão Principal com estado de carregamento */}
                         <PrimaryButton
                             type="submit"
@@ -417,7 +392,7 @@ function Sigin() {
                         sx={{
                             fontSize: '11px',
                             color: '#9ca3af',
-                            marginTop: 'clamp(6px, 1.2vh, 12px)',
+                            marginTop: 'clamp(8px, 1.2vh, 12px)',
                             textAlign: 'left',
                             fontFamily: 'system-ui, -apple-system, sans-serif',
                         }}

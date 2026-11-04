@@ -2,6 +2,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import './header.css';
 
 const DEFAULT_BREADCRUMBS = [
@@ -43,6 +44,7 @@ function Header({ breadcrumbs = DEFAULT_BREADCRUMBS }) {
             </Breadcrumbs>
 
             <div className="header-date">
+                <NotificationsNoneOutlinedIcon sx={{ fontSize: 20, color: '#6b7280', cursor: 'pointer', mr: 2 }} />
                 <Divider orientation="vertical" flexItem className="header-divider" />
                 <Typography className="header-date-text">{formatDate()}</Typography>
             </div>

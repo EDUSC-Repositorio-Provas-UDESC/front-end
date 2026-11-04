@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SideSectionJoinSite from '../components/side_section_join_site/side_section_join_site';
+import SideSectionJoinSite from '../components/sideSectionJoinSite/sideSectionJoinSite';
 import InputField from '../components/common/InputField';
 import PrimaryButton from '../components/common/PrimaryButton';
 import loginService from '../services/loginService';
@@ -159,7 +159,7 @@ function Login() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="mariana.costa@edu.udesc.br"
+                            placeholder="conta@edu.udesc.br"
                             autoComplete="email"
                             required
                         />
@@ -170,7 +170,6 @@ function Login() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••••••"
                             autoComplete="current-password"
                             required
                         />

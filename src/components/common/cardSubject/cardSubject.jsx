@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -12,16 +13,16 @@ import IconButton from '@mui/material/IconButton';
 import './cardSubject.css';
 
 export default function CardSubject({ tag, name, teacher, description, resourcesQty, favorite: initialFavorite = false }) {
+    const navigate = useNavigate();
     const [favorite, setFavorite] = useState(initialFavorite);
 
     const handleFavoriteClick = (e) => {
         e.stopPropagation();
-        console.log('handleFavoriteClick');
         setFavorite(!favorite);
     }
 
-    const handleCardClick = (e) => {
-        e.stopPropagation();
+    const handleCardClick = () => {
+        navigate(`/disciplina/${tag}`);
     }
 
     return (

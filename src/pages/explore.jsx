@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, InputBase, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import SideBar from '../components/side_bar/side_bar';
+import SideBar from '../components/sideBar/sideBar';
 import Header from '../components/header/header';
-import CardSubject from '../components/common/cardSubject';
+import CardSubject from '../components/common/cardSubject/cardSubject';
 import Combobox from '../components/common/combobox';
 import PrimaryButton from '../components/common/PrimaryButton';
 import subjectService from '../services/subjectService';

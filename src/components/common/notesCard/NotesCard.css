@@ -1,0 +1,173 @@
+.notes-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.notes-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #006b47;
+}
+
+.notes-card-title.MuiTypography-root {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2d27;
+}
+
+.notes-card-tabs.MuiTabs-root {
+    min-height: 36px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.notes-card-tabs .MuiTabs-indicator {
+    background-color: #006b47;
+}
+
+.notes-card-tabs .MuiTab-root {
+    text-transform: none;
+    min-height: 36px;
+    min-width: 0;
+    padding: 6px 0;
+    margin-right: 22px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.notes-card-tabs .MuiTab-root.Mui-selected {
+    color: #006b47;
+    font-weight: 700;
+}
+
+.notes-card-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.notes-card-label.MuiTypography-root {
+    margin-bottom: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #1f2d27;
+}
+
+.notes-card-input.MuiInputBase-root {
+    padding: 7px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: #1f2d27;
+    background-color: #ffffff;
+}
+
+.notes-card-editor {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.notes-card-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background-color: #f4f6f5;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.notes-card-toolbar .MuiIconButton-root {
+    padding: 4px;
+    border-radius: 4px;
+    color: #1f2d27;
+}
+
+.notes-card-textarea.MuiInputBase-root {
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #374151;
+    align-items: flex-start;
+}
+
+.notes-card-save-btn.MuiButton-root {
+    align-self: flex-start;
+    height: 36px;
+    font-size: 12.5px;
+}
+
+.notes-card-saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 440px;
+    overflow-y: auto;
+}
+
+.notes-card-empty.MuiTypography-root {
+    padding: 24px 0;
+    text-align: center;
+    font-size: 12.5px;
+    color: #6b7280;
+}
+
+.notes-card-saved-item {
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #fafbfc;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.notes-card-saved-item:hover {
+    border-color: #006b47;
+    background-color: #f4f9f6;
+}
+
+.notes-card-saved-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.notes-card-saved-title.MuiTypography-root {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1f2d27;
+}
+
+.notes-card-delete-btn.MuiIconButton-root {
+    padding: 2px;
+    color: #9ca3af;
+}
+
+.notes-card-delete-btn.MuiIconButton-root:hover {
+    color: #dc2626;
+}
+
+.notes-card-saved-content.MuiTypography-root {
+    margin-top: 4px;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #4b5563;
+    white-space: pre-wrap;
+}
+
+.notes-card-saved-date.MuiTypography-root {
+    margin-top: 6px;
+    font-size: 10.5px;
+    color: #9ca3af;
+}

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, InputBase, Link } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import SideBar from '../components/side_bar/side_bar';
+import SideBar from '../components/sideBar/sideBar';
 import Header from '../components/header/header';
-import CardSubject from '../components/common/cardSubject';
+import CardSubject from '../components/common/cardSubject/cardSubject';
 import subjectService from '../services/subjectService';
 
-function Home() {
+function Home({ name_user }) {
     const [subjects, setSubjects] = useState([]);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ function Home() {
                 {/* Apenas esta área rola; sidebar e header ficam fixos */}
                 <Box component="main" sx={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: { xs: '20px 16px', md: '32px 28px' }, display: 'flex', flexDirection: 'column', gap: '28px', '& > *': { flexShrink: 0 } }}>
                     <Typography sx={{ fontSize: { xs: 24, md: 28 }, fontWeight: 700, color: '#1f2d27', letterSpacing: '-0.5px' }}>
-                        Olá, Mariana.
+                        Olá, {name_user}.
                     </Typography>
 
                     {/* Banner de busca */}

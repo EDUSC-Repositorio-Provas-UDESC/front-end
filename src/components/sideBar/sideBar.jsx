@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './side_bar.css';
+import './sideBar.css';
 import {
     Divider,
     Avatar,
@@ -15,7 +15,6 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import StyleRoundedIcon from '@mui/icons-material/StyleRounded';
-import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
@@ -25,7 +24,6 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 const MENU_ITEMS = [
     { id: 'inicio', label: 'Início', icon: <HomeOutlinedIcon /> },
     { id: 'explorar', label: 'Explorar disciplinas', icon: <StyleRoundedIcon /> },
-    { id: 'favoritos', label: 'Favoritos', icon: <StarBorderOutlinedIcon /> },
     { id: 'atividades', label: 'Minhas atividades', icon: <AssignmentOutlinedIcon /> },
     { id: 'conteudos', label: 'Meus conteúdos', icon: <FolderOpenOutlinedIcon /> },
     { id: 'anotacoes', label: 'Anotações', icon: <EditNoteOutlinedIcon /> },
@@ -34,7 +32,6 @@ const MENU_ITEMS = [
 const ROUTES = {
     inicio: '/home',
     explorar: '/explorar',
-    favoritos: '/favoritos',
     atividades: '/atividades',
     conteudos: '/conteudos',
     anotacoes: '/anotacoes',

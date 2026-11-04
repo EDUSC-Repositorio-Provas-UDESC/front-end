@@ -1,4 +1,4 @@
-import './side_section_join_site.css';
+import './sideSectionJoinSite.css';
 import ImportContactsOutlinedIcon from '@mui/icons-material/ImportContactsOutlined';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutlined';
 

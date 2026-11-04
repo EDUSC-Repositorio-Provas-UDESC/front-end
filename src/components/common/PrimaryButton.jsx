@@ -24,6 +24,7 @@ export default function PrimaryButton({
                 fontWeight: 600,
                 textTransform: 'none',
                 boxShadow: 'none',
+                marginTop: 'clamp(12px, 2vh, 18px)',
                 height: '40px',
                 '&:hover': {
                     backgroundColor: '#005236',
