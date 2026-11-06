@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Typography, InputBase, Button, Tabs, Tab } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -15,6 +15,7 @@ const PAGE_STEP = 5;
 
 function Subject() {
     const { tag } = useParams();
+    const navigate = useNavigate();
     const searchRef = useRef(null);
 
     const [subject, setSubject] = useState(null);
@@ -111,7 +112,7 @@ function Subject() {
                                     </Typography>
                                 </Box>
 
-                                <Box sx={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
+                                <Box sx={{ display: 'flex', gap: '10px', flexShrink: 0, alignItems: 'center' }}>
                                     <Button
                                         variant="outlined"
                                         onClick={() => setFavorite(!favorite)}
@@ -120,7 +121,12 @@ function Subject() {
                                     >
                                         {favorite ? 'Favoritada' : 'Favoritar'}
                                     </Button>
-                                    <PrimaryButton fullWidth={false} startIcon={<AddIcon />} sx={{ height: '36px', fontSize: 12.5, whiteSpace: 'nowrap' }}>
+                                    <PrimaryButton
+                                        fullWidth={false}
+                                        onClick={() => navigate(`/conteudos/novo?disciplina=${subject.tag}`)}
+                                        startIcon={<AddIcon />}
+                                        sx={{ height: '36px', fontSize: 12.5, whiteSpace: 'nowrap', margin: '0px !important' }}
+                                    >
                                         Adicionar conteúdo
                                     </PrimaryButton>
                                 </Box>
@@ -167,7 +173,15 @@ function Subject() {
                                     <SectionContent
                                         key={resource.id}
                                         {...resource}
-                                        href={resource.format === 'PDF' ? `/conteudo/${resource.id}` : resource.href}
+                                        href={
+                                            resource.format === 'PDF'
+                                                ? `/conteudo/${resource.id}`
+                                                : resource.format === 'Link'
+                                                    ? `/conteudo-link/${resource.id}`
+                                                    : resource.format === 'Atividade'
+                                                        ? `/conteudo-atividade/${resource.id}`
+                                                        : resource.href
+                                        }
                                     />
                                 ))}
 

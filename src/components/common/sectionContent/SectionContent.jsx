@@ -11,14 +11,22 @@ const FORMAT_ICONS = {
     PDF: DescriptionOutlinedIcon,
     Link: InsertLinkOutlinedIcon,
     Livro: MenuBookOutlinedIcon,
-    Atividade: RuleIcon
+    Atividade: RuleIcon,
 };
+
+function resolveTargetHref(format, id, href) {
+    if (href && href !== '#') return href;
+    if (format === 'PDF') return `/conteudo/${id || 'CAL1001-1'}`;
+    if (format === 'Link') return `/conteudo-link/${id || 'CAL1001-4'}`;
+    if (format === 'Atividade') return `/conteudo-atividade/${id || 'CAL1001-6'}`;
+    return '#';
+}
 
 /** Resumo de um recurso da disciplina (prova, lista, arquivo, link...). */
 export default function SectionContent({ id, format = 'PDF', title, typeLabel, author, date, pages, href = '#' }) {
     const Icon = FORMAT_ICONS[format] ?? DescriptionOutlinedIcon;
     const meta = [typeLabel, author, date, pages ? `${pages} páginas` : null].filter(Boolean).join(' • ');
-    const targetHref = format === 'PDF' ? (href !== '#' ? href : `/conteudo/${id || 'CAL1001-1'}`) : href;
+    const targetHref = resolveTargetHref(format, id, href);
     const isInternal = targetHref.startsWith('/');
 
     return (

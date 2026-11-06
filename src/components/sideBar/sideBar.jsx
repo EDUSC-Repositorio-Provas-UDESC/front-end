@@ -15,7 +15,6 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import StyleRoundedIcon from '@mui/icons-material/StyleRounded';
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
@@ -24,7 +23,6 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 const MENU_ITEMS = [
     { id: 'inicio', label: 'Início', icon: <HomeOutlinedIcon /> },
     { id: 'explorar', label: 'Explorar disciplinas', icon: <StyleRoundedIcon /> },
-    { id: 'atividades', label: 'Minhas atividades', icon: <AssignmentOutlinedIcon /> },
     { id: 'conteudos', label: 'Meus conteúdos', icon: <FolderOpenOutlinedIcon /> },
     { id: 'anotacoes', label: 'Anotações', icon: <EditNoteOutlinedIcon /> },
 ];
@@ -32,7 +30,6 @@ const MENU_ITEMS = [
 const ROUTES = {
     inicio: '/home',
     explorar: '/explorar',
-    atividades: '/atividades',
     conteudos: '/conteudos',
     anotacoes: '/anotacoes',
 };
