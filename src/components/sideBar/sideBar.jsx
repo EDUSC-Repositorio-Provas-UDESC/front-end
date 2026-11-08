@@ -10,7 +10,8 @@ import {
     ListItemIcon,
     ListItemText,
     IconButton,
-    Drawer
+    Drawer,
+    Typography,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -19,6 +20,8 @@ import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 
 const MENU_ITEMS = [
     { id: 'inicio', label: 'Início', icon: <HomeOutlinedIcon /> },
@@ -27,22 +30,32 @@ const MENU_ITEMS = [
     { id: 'anotacoes', label: 'Anotações', icon: <EditNoteOutlinedIcon /> },
 ];
 
+const PROFESSOR_ITEMS = [
+    { id: 'painel-professor', label: 'Painel do professor', icon: <DashboardOutlinedIcon /> },
+    { id: 'criar-materia', label: 'Criar matéria', icon: <AddCircleOutlinedIcon /> },
+];
+
 const ROUTES = {
     inicio: '/home',
     explorar: '/explorar',
     conteudos: '/conteudos',
     anotacoes: '/anotacoes',
+    'painel-professor': '/professor/painel',
+    'criar-materia': '/professor/criar-materia',
 };
 
 function SideBar({
     userName = '',
     userRole = '',
     userInitials = '',
-    defaultActive = 'inicio'
+    defaultActive = 'inicio',
+    userRoleKey = '',
 }) {
     const navigate = useNavigate();
     const [activeItem, setActiveItem] = useState(defaultActive);
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    const isProfessor = userRoleKey === 'professor';
 
     const handleSelect = (id) => {
         setActiveItem(id);
@@ -111,6 +124,41 @@ function SideBar({
                     })}
                 </List>
             </div>
+
+            {/* Navegação: ENSINO (apenas professor) */}
+            {isProfessor && (
+                <div className="sidebar-menu-section">
+                    <Typography
+                        variant="caption"
+                        className="sidebar-section-label"
+                        sx={{ color: '#6b7280', fontWeight: 700, letterSpacing: '0.08em', display: 'block', px: 1, mb: 0.5 }}
+                    >
+                        ENSINO
+                    </Typography>
+                    <List className="sidebar-nav-list" disablePadding>
+                        {PROFESSOR_ITEMS.map((item) => {
+                            const isActive = activeItem === item.id;
+                            return (
+                                <ListItem key={item.id} className="sidebar-nav-item" disablePadding>
+                                    <ListItemButton
+                                        selected={isActive}
+                                        onClick={() => handleSelect(item.id)}
+                                        className={`sidebar-nav-button ${isActive ? 'active' : ''}`}
+                                    >
+                                        <ListItemIcon className="sidebar-nav-icon">
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={item.label}
+                                            className="sidebar-nav-text"
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        })}
+                    </List>
+                </div>
+            )}
         </aside>
     );
 

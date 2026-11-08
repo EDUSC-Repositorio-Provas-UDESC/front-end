@@ -223,7 +223,7 @@ function Sigin() {
                         <ComboBox
                             label="Curso de graduação *"
                             value={course}
-                            onChange={(e) => setCourse(e.target.value)}
+                            onChange={setCourse}
                             options={[
                                 { value: 'cct-cc', label: 'Ciência da Computação — CCT' },
                                 { value: 'cct-es', label: 'Engenharia de Software — CCT' },
@@ -235,7 +235,7 @@ function Sigin() {
                                 { value: 'cct-lm', label: 'Licenciatura em Matemática — CCT' },
                             ]}
                             placeholder="Selecione seu curso"
-                            required={true}
+                            required
                         />
 
                         {/* Campo: Papel solicitado */}

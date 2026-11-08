@@ -415,7 +415,7 @@ function getCurrentUser() {
     return {
         name: 'Mariana Costa',
         email: 'mariana.costa@edu.udesc.br',
-        role: 'aluno',
+        role: 'professor',
     };
 }
 

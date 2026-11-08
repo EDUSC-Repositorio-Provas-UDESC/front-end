@@ -85,7 +85,7 @@ export const loginService = {
                     id: 101,
                     name: email.split('@')[0],
                     email,
-                    role: 'aluno',
+                    role: 'professor',
                     token: 'mock-jwt-token-' + Math.random().toString(36).substring(2),
                 };
                 return {

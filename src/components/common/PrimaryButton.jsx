@@ -4,16 +4,19 @@ import { Button, CircularProgress } from '@mui/material';
 export default function PrimaryButton({
     children,
     endIcon,
+    startIcon,
     loading = false,
     disabled = false,
+    fullWidth = true,
     sx = {},
     ...props
 }) {
     return (
         <Button
             variant="contained"
-            fullWidth
+            fullWidth={fullWidth}
             disabled={disabled || loading}
+            startIcon={!loading ? startIcon : null}
             endIcon={!loading ? endIcon : null}
             sx={{
                 backgroundColor: '#006b47',

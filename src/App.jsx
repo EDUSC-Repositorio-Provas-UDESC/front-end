@@ -17,6 +17,9 @@ import MyContents from "./pages/myContents";
 import ContentForm from "./pages/contentForm";
 import Annotations from "./pages/annotations";
 import AnnotationDetails from "./pages/annotationDetails";
+// professor
+import TeacherDashboard from "./pages/professor/teacherDashboard";
+import CreateSubject from "./pages/professor/createSubject";
 
 function App() {
 
@@ -40,6 +43,9 @@ function App() {
         <Route path="/conteudos/editar/:id" element={<ContentForm />} />
         <Route path="/anotacoes" element={<Annotations />} />
         <Route path="/anotacoes/:id" element={<AnnotationDetails />} />
+        {/* Rotas exclusivas do professor */}
+        <Route path="/professor/painel" element={<TeacherDashboard />} />
+        <Route path="/professor/criar-materia" element={<CreateSubject />} />
       </Routes>
     </BrowserRouter>
   )
