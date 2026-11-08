@@ -105,7 +105,7 @@ function Annotations() {
                 width: '100%',
                 height: '100vh',
                 overflow: 'hidden',
-                backgroundColor: '#f4f6f5',
+                backgroundColor: 'var(--c-bg)',
             }}
         >
             <SideBar
@@ -135,15 +135,15 @@ function Annotations() {
                         <Typography
                             component="h1"
                             sx={{
-                                fontSize: { xs: 24, md: 28 },
+                                fontSize: { xs: '1.2812rem', md: '1.5rem' },
                                 fontWeight: 700,
-                                color: '#1f2d27',
+                                color: 'var(--c-text)',
                                 letterSpacing: '-0.5px',
                             }}
                         >
                             Minhas anotações de estudo.
                         </Typography>
-                        <Typography sx={{ fontSize: 13.5, color: '#6b7a71' }}>
+                        <Typography sx={{ fontSize: '0.8438rem', color: 'var(--c-text-muted)' }}>
                             Escolha o tipo de material abaixo e clique em um conteúdo para visualizar todas as anotações daquele título.
                         </Typography>
                     </Box>
@@ -170,10 +170,10 @@ function Annotations() {
                                     key={cat.id}
                                     onClick={() => handleSelectCategory(cat.id)}
                                     sx={{
-                                        backgroundColor: isSelected ? '#eef6f2' : '#ffffff',
+                                        backgroundColor: isSelected ? 'var(--c-primary-soft)' : 'var(--c-surface)',
                                         border: isSelected
-                                            ? '1.5px solid #0b6440'
-                                            : '1px solid #e2ebe5',
+                                            ? '1.5px solid var(--c-primary)'
+                                            : '1px solid var(--c-border)',
                                         borderRadius: '12px',
                                         padding: '16px',
                                         cursor: 'pointer',
@@ -183,8 +183,8 @@ function Annotations() {
                                         gap: '10px',
                                         transition: 'all 0.15s ease',
                                         '&:hover': {
-                                            borderColor: '#0b6440',
-                                            backgroundColor: isSelected ? '#eef6f2' : '#f9fbfa',
+                                            borderColor: 'var(--c-primary)',
+                                            backgroundColor: isSelected ? 'var(--c-primary-soft)' : 'var(--c-sidebar)',
                                         }
                                     }}
                                 >
@@ -194,8 +194,8 @@ function Annotations() {
                                                 width: 36,
                                                 height: 36,
                                                 borderRadius: '9px',
-                                                backgroundColor: isSelected ? '#0b6440' : '#eef5f0',
-                                                color: isSelected ? '#ffffff' : '#0b6440',
+                                                backgroundColor: isSelected ? 'var(--c-brand)' : 'var(--c-primary-soft)',
+                                                color: isSelected ? 'var(--c-on-brand)' : 'var(--c-primary)',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
@@ -206,9 +206,9 @@ function Annotations() {
 
                                         <Box
                                             sx={{
-                                                backgroundColor: isSelected ? '#d4ebe0' : '#f0f4f1',
-                                                color: '#0b6440',
-                                                fontSize: 11,
+                                                backgroundColor: isSelected ? 'var(--c-primary-soft-hover)' : 'var(--c-surface-muted)',
+                                                color: 'var(--c-primary)',
+                                                fontSize: '0.6875rem',
                                                 fontWeight: 700,
                                                 padding: '3px 9px',
                                                 borderRadius: '999px',
@@ -221,15 +221,15 @@ function Annotations() {
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontSize: 14.5,
+                                                fontSize: '0.9062rem',
                                                 fontWeight: 700,
-                                                color: '#1f2d27',
+                                                color: 'var(--c-text)',
                                                 marginBottom: '3px',
                                             }}
                                         >
                                             {cat.label}
                                         </Typography>
-                                        <Typography sx={{ fontSize: 12, color: '#6b7a71', lineHeight: 1.4 }}>
+                                        <Typography sx={{ fontSize: '0.75rem', color: 'var(--c-text-muted)', lineHeight: 1.4 }}>
                                             {cat.description}
                                         </Typography>
                                     </Box>
@@ -241,8 +241,8 @@ function Annotations() {
                     {/* Lista paginada de conteúdos retornada pelo back-end para a aba ativa */}
                     <Box
                         sx={{
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #e2ebe5',
+                            backgroundColor: 'var(--c-surface)',
+                            border: '1px solid var(--c-border)',
                             borderRadius: '14px',
                             padding: { xs: '18px 16px', md: '24px 26px' },
                             display: 'flex',
@@ -256,13 +256,13 @@ function Annotations() {
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
                                 paddingBottom: '8px',
-                                borderBottom: '1px solid #eef2ef',
+                                borderBottom: '1px solid var(--c-surface-muted)',
                             }}
                         >
-                            <Typography component="h2" sx={{ fontSize: 17, fontWeight: 700, color: '#1f2d27' }}>
+                            <Typography component="h2" sx={{ fontSize: '0.9688rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                 {activeCategoryConfig.label} ({result.total})
                             </Typography>
-                            <Typography sx={{ fontSize: 12, color: '#7a8a80' }}>
+                            <Typography sx={{ fontSize: '0.75rem', color: 'var(--c-text-muted)' }}>
                                 Clique em um item para ver suas anotações
                             </Typography>
                         </Box>
@@ -270,8 +270,8 @@ function Annotations() {
                         {result.items.length === 0 ? (
                             <Typography
                                 sx={{
-                                    fontSize: 13.5,
-                                    color: '#7a8a80',
+                                    fontSize: '0.8438rem',
+                                    color: 'var(--c-text-muted)',
                                     textAlign: 'center',
                                     padding: '28px 0',
                                 }}
@@ -303,11 +303,11 @@ function Annotations() {
                                             cursor: 'pointer',
                                             borderBottom:
                                                 index < result.items.length - 1
-                                                    ? '1px solid #eef2ef'
+                                                    ? '1px solid var(--c-surface-muted)'
                                                     : 'none',
                                             transition: 'background-color 0.15s ease',
                                             '&:hover': {
-                                                backgroundColor: '#f7faf8',
+                                                backgroundColor: 'var(--c-surface-alt)',
                                             },
                                         }}
                                     >
@@ -317,8 +317,8 @@ function Annotations() {
                                                     width: 42,
                                                     height: 44,
                                                     borderRadius: '10px',
-                                                    backgroundColor: '#eef5f0',
-                                                    color: '#0b6440',
+                                                    backgroundColor: 'var(--c-primary-soft)',
+                                                    color: 'var(--c-primary)',
                                                     display: 'flex',
                                                     flexDirection: 'column',
                                                     alignItems: 'center',
@@ -328,7 +328,7 @@ function Annotations() {
                                                 }}
                                             >
                                                 <Icon fontSize="small" />
-                                                <Typography sx={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3px' }}>
+                                                <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.3px' }}>
                                                     {item.format}
                                                 </Typography>
                                             </Box>
@@ -336,15 +336,15 @@ function Annotations() {
                                             <Box sx={{ minWidth: 0 }}>
                                                 <Typography
                                                     sx={{
-                                                        fontSize: 14.5,
+                                                        fontSize: '0.9062rem',
                                                         fontWeight: 700,
-                                                        color: '#1f2d27',
+                                                        color: 'var(--c-text)',
                                                         marginBottom: '2px',
                                                     }}
                                                 >
                                                     {item.title}
                                                 </Typography>
-                                                <Typography sx={{ fontSize: 12, color: '#6b7a71' }}>
+                                                <Typography sx={{ fontSize: '0.75rem', color: 'var(--c-text-muted)' }}>
                                                     {[item.typeLabel, item.subjectName, item.teacher]
                                                         .filter(Boolean)
                                                         .join(' • ')}
@@ -355,9 +355,9 @@ function Annotations() {
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
                                             <Box
                                                 sx={{
-                                                    backgroundColor: '#e6f4ed',
-                                                    color: '#0b6440',
-                                                    fontSize: 11.5,
+                                                    backgroundColor: 'var(--c-primary-soft)',
+                                                    color: 'var(--c-primary)',
+                                                    fontSize: '0.7188rem',
                                                     fontWeight: 700,
                                                     padding: '4px 10px',
                                                     borderRadius: '999px',
@@ -368,9 +368,9 @@ function Annotations() {
 
                                             <Typography
                                                 sx={{
-                                                    fontSize: 12.5,
+                                                    fontSize: '0.7812rem',
                                                     fontWeight: 700,
-                                                    color: '#0b6440',
+                                                    color: 'var(--c-primary)',
                                                     whiteSpace: 'nowrap',
                                                 }}
                                             >
@@ -393,7 +393,7 @@ function Annotations() {
                             gap: '12px',
                         }}
                     >
-                        <Typography sx={{ fontSize: 11.5, color: '#6b7280' }}>
+                        <Typography sx={{ fontSize: '0.7188rem', color: 'var(--c-text-muted)' }}>
                             Exibindo {result.items.length} de {result.total} conteúdos com anotações
                         </Typography>
 
@@ -405,10 +405,10 @@ function Annotations() {
                                 sx={{
                                     textTransform: 'none',
                                     fontWeight: 600,
-                                    fontSize: 12,
-                                    color: '#1f2d27',
-                                    borderColor: '#e5e7eb',
-                                    backgroundColor: '#ffffff',
+                                    fontSize: '0.75rem',
+                                    color: 'var(--c-text)',
+                                    borderColor: 'var(--c-border)',
+                                    backgroundColor: 'var(--c-surface)',
                                 }}
                             >
                                 Anterior
@@ -416,10 +416,10 @@ function Annotations() {
 
                             <Typography
                                 sx={{
-                                    fontSize: 11.5,
+                                    fontSize: '0.7188rem',
                                     fontWeight: 700,
-                                    color: '#006b47',
-                                    backgroundColor: '#e8f3ed',
+                                    color: 'var(--c-primary)',
+                                    backgroundColor: 'var(--c-primary-soft)',
                                     borderRadius: '6px',
                                     padding: '4px 10px',
                                 }}
@@ -434,10 +434,10 @@ function Annotations() {
                                 sx={{
                                     textTransform: 'none',
                                     fontWeight: 600,
-                                    fontSize: 12,
-                                    color: '#1f2d27',
-                                    borderColor: '#e5e7eb',
-                                    backgroundColor: '#ffffff',
+                                    fontSize: '0.75rem',
+                                    color: 'var(--c-text)',
+                                    borderColor: 'var(--c-border)',
+                                    backgroundColor: 'var(--c-surface)',
                                 }}
                             >
                                 Próxima

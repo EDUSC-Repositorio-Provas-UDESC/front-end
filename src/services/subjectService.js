@@ -1,4 +1,270 @@
+// ============================================================================
+// subjectService.js — Disciplinas, conteúdos, contribuições e anotações
+// (routers FastAPI: `subjects`, `contents`, `contributions`, `annotations`)
+// ============================================================================
+// Todas as rotas exigem usuário autenticado (`Depends(get_current_user)`,
+// qualquer papel: aluno, professor ou admin), salvo indicação em contrário.
+// Erros comuns a todas as rotas deste arquivo:
+// - 401 `"Não autenticado."` (token ausente/inválido/expirado)
+// - 422 validação de path/query/body
+//
+// Sem `VITE_API_URL` os dados mock abaixo são usados (contribuições e anotações
+// persistem no `localStorage`). Cliente HTTP, convenções e formato de erro:
+// ver `apiClient.js` e `README.md`.
+//
+// Modelos Pydantic deste domínio (definidos uma única vez aqui):
+//
+// ```python
+// from typing import Literal
+// from pydantic import Field
+// from app.schemas.base import CamelModel  # alias_generator=to_camel
+//
+// ResourceType = Literal["prova", "exercicio", "arquivo", "link", "livro", "atividade"]
+// ResourceFormat = Literal["PDF", "Link", "Livro", "Atividade"]
+// ContributionType = Literal["arquivo", "exercicio", "link"]
+//
+// class Option(CamelModel):
+//     value: str
+//     label: str
+//
+// # ---- Disciplinas ----
+// class FavoriteSubjectOut(CamelModel):
+//     id: int
+//     tag: str                            # código, ex.: "CAL1001"
+//     name: str
+//     teacher: str                        # ex.: "Profa. Ana Martins"
+//     description: str                    # ex.: "Ciência da Computação • 2026.2"
+//     resources_qty: int
+//
+// class SubjectOptionOut(CamelModel):
+//     tag: str
+//     name: str
+//     label: str                          # ex.: "Cálculo I — CAL1001"
+//     teacher: str
+//     course_label: str
+//
+// class ResourceCounts(CamelModel):
+//     all: int
+//     prova: int
+//     link: int
+//     atividade: int
+//
+// class SubjectDetailOut(CamelModel):
+//     tag: str
+//     name: str
+//     teacher: str
+//     favorite: bool                      # favorita para o usuário do token
+//     course_label: str
+//     semester: str
+//     counts: ResourceCounts
+//
+// class ResourceOut(CamelModel):
+//     id: str                             # ex.: "CAL1001-1"
+//     type: ResourceType
+//     format: ResourceFormat
+//     title: str
+//     author: str
+//     type_label: str                     # ex.: "Prova anterior"
+//     category_label: str                 # ex.: "Provas anteriores"
+//     date: str                           # já formatado, ex.: "19 out. 2026"
+//     pages: int | None = None
+//     size: str | None = None             # ex.: "1,2 MB"
+//     file_name: str | None = None
+//     file_url: str | None = None
+//     href: str                           # rota do front: /conteudo/{id}, /conteudo-link/{id}, /conteudo-atividade/{id}
+//
+// class ResourceListOut(CamelModel):
+//     items: list[ResourceOut]
+//     total: int                          # total após filtros (antes do limit)
+//
+// class FilterOptionsOut(CamelModel):
+//     courses: list[Option]
+//     subjects: list[Option]              # value = tag, label = nome
+//     teachers: list[Option]              # value = label = nome do professor
+//
+// class CatalogSubjectOut(CamelModel):
+//     id: int
+//     tag: str
+//     name: str
+//     teacher: str
+//     course: str
+//     semester: str
+//     resources_qty: int
+//     favorite: bool
+//     description: str                    # "<curso> • <semestre>"
+//
+// class CatalogPageOut(CamelModel):
+//     items: list[CatalogSubjectOut]
+//     total: int
+//     page: int                           # página efetiva (limitada a total_pages)
+//     total_pages: int                    # mínimo 1
+//
+// # ---- Conteúdos (visualização) ----
+// class ContentBase(CamelModel):
+//     id: str
+//     subject_tag: str
+//     subject_name: str
+//     teacher: str
+//     course_label: str | None = None
+//     semester: str | None = None
+//     date: str
+//     category_label: str                 # "Meus conteúdos" para contribuições
+//     short_title: str                    # título antes de "—" (ou ":" para links)
+//     title: str
+//     description: str                    # ex.: "Cálculo I • Profa. Ana Martins • Publicado em 19 out. 2026"
+//
+// class ContentPdfOut(ContentBase):
+//     type_label: str
+//     info: str                           # ex.: "PDF • 1,2 MB • 4 páginas"
+//     file_name: str
+//     file_url: str                       # URL pública/assinada do PDF
+//     pages: int
+//
+// class StudyLink(CamelModel):
+//     id: str
+//     kind: Literal["video", "simulador", "site"]
+//     kind_label: str                     # ex.: "Vídeo-aula"
+//     title: str
+//     description: str = ""
+//     source: str = ""                    # ex.: "YouTube • Canal Acadêmico UDESC"
+//     duration: str = ""                  # ex.: "18 min"
+//     url: str
+//     embed_url: str | None = None
+//
+// class ContentLinkOut(ContentBase):
+//     type_label: str
+//     info: str                           # ex.: "Vídeos e sites • 4 referências de estudo"
+//     main_url: str                       # url do primeiro link ("" se nenhum)
+//     links: list[StudyLink]
+//
+// class QuestionOption(CamelModel):
+//     id: str                             # "A".."D"
+//     label: str                          # ex.: "A. 5"
+//
+// class Question(CamelModel):
+//     id: str
+//     number: str                         # ex.: "01"
+//     title: str
+//     points: str                         # já formatado, ex.: "2,0 pontos"
+//     type: Literal["multiple_choice", "direct_result"]
+//     statement: str
+//     options: list[QuestionOption] | None = None   # multiple_choice
+//     placeholder: str | None = None                # direct_result
+//     correct_answer: str                 # id da opção ou resultado numérico
+//
+// class ContentActivityOut(ContentBase):
+//     questions: list[Question]
+//
+// # ---- Contribuições (materiais enviados pelo usuário) ----
+// class ContributionIn(CamelModel):
+//     id: str | None = None               # presente só na edição (também vai no path)
+//     title: str
+//     subject_tag: str
+//     teacher: str = ""
+//     resource_type: ContributionType = "arquivo"
+//     description: str = ""
+//     support_url: str = ""
+//     citation: str = ""
+//     file_name: str | None = None        # resource_type == "arquivo"
+//     file_size: str | None = None        # já formatado, ex.: "842 KB"
+//     file_url: str | None = None         # hoje é um blob: local — ver README (upload)
+//     pages: int | None = None
+//     questions: list[Question] = []      # resource_type == "exercicio"
+//     links: list[StudyLink] = []         # resource_type == "link"
+//
+// class ContributionOut(CamelModel):
+//     id: str                             # ex.: "CONTRIB-1"
+//     title: str
+//     subject_tag: str
+//     subject_name: str
+//     teacher: str
+//     resource_type: ContributionType
+//     type_label: str                     # "Arquivo PDF" | "Exercício" | "Link recomendado"
+//     format: Literal["PDF", "Atividade", "Link"]
+//     date: str
+//     timestamp: int                      # usado para ordenação
+//     status: Literal["pendente", "publicado"]   # professor publica direto; aluno fica pendente
+//     request_code: str                   # ex.: "SOL-024"
+//     submitted_at: str                   # ex.: "20 out. 2026, às 14h20"
+//     author: str
+//     file_name: str | None = None
+//     file_size: str | None = None
+//     file_url: str | None = None
+//     pages: int | None = None
+//     description: str = ""
+//     support_url: str = ""
+//
+// class ContributionPageOut(CamelModel):  # lista paginada de "Meus conteúdos"
+//     items: list[ContributionOut]        # mais recentes primeiro (timestamp desc)
+//     total: int                          # total de contribuições do usuário
+//     page: int
+//     page_size: int
+//     citation: str = ""
+//     questions: list[Question] = []
+//     links: list[StudyLink] = []
+//     href: str | None = None             # preenchido na listagem (GET /api/contributions/me)
+//
+// # ---- Anotações ----
+// class NoteIn(CamelModel):
+//     title: str = "Sem título"
+//     content: str = ""
+//
+// class NoteOut(CamelModel):
+//     id: str
+//     title: str
+//     content: str
+//     date: str                           # ex.: "20 out. 2026"
+//
+// AnnotationCategory = Literal["all", "prova", "link", "atividade", "outros"]
+//
+// class AnnotatedResourceOut(CamelModel):
+//     id: str
+//     title: str
+//     type: ResourceType
+//     type_label: str
+//     format: str
+//     subject_tag: str
+//     subject_name: str
+//     teacher: str
+//     date: str
+//     href: str
+//     notes_count: int
+//
+// class AnnotationCounts(CamelModel):     # soma de ANOTAÇÕES (não de recursos) por aba
+//     all: int
+//     prova: int
+//     link: int
+//     atividade: int
+//     outros: int                         # exercicio + arquivo + livro
+//
+// class AnnotatedPageOut(CamelModel):
+//     items: list[AnnotatedResourceOut]
+//     total: int
+//     page: int
+//     page_size: int
+//     total_pages: int
+//     counts_by_category: AnnotationCounts
+//
+// class AnnotatedResourceDetailOut(CamelModel):
+//     id: str
+//     title: str
+//     type: ResourceType
+//     type_label: str
+//     format: str
+//     subject_tag: str
+//     subject_name: str
+//     teacher: str
+//     date: str
+//     href: str
+//     notes_count: int | None = None
+//     notes: list[NoteOut]
+// ```
+// ============================================================================
+
 import samplePdf from '../assets/StradowskiMadeyski24FSE.pdf';
+import { apiRequest, getStoredUser } from './apiClient';
+
+// ---- Mock Data e helpers do modo mock ----
 
 const SUBJECTS = [
     { id: 1, tag: 'CAL1001', name: 'Cálculo I', teacher: 'Profa. Ana Martins', description: 'Ciência da Computação • 2026.2', resourcesQty: 24 },
@@ -25,7 +291,6 @@ const CATALOG = [
     { id: 8, tag: 'EAN2001', name: 'Eletrônica Analógica', teacher: 'Profa. Helena Duarte', course: 'ee', semester: '2026.2', resourcesQty: 11, favorite: false },
 ];
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const courseLabel = (value) => COURSES.find((c) => c.value === value)?.label ?? '';
 
@@ -400,17 +665,15 @@ function buildResources(subject) {
         }
     }
 
-    return { items, counts: { all: total, prova, exercicio, atividade } };
+    // Contadores das abas da disciplina (filtro rápido: todos, provas, links, atividades)
+    return { items, counts: { all: total, prova, link, atividade } };
 }
 
+/** Usuário salvo no login; no mock, cai num usuário padrão para chavear o `localStorage`. */
 function getCurrentUser() {
-    try {
-        const storedUser = JSON.parse(localStorage.getItem('udesc_estuda_user') || 'null');
-        if (storedUser && storedUser.email) {
-            return storedUser;
-        }
-    } catch {
-        // Ignora erro de parse
+    const storedUser = getStoredUser();
+    if (storedUser && storedUser.email) {
+        return storedUser;
     }
     return {
         name: 'Mariana Costa',
@@ -547,156 +810,85 @@ function collectAllAnnotatedResources() {
     return result;
 }
 
-/**
- * ============================================================================
- * CONFIGURAÇÃO DO CLIENTE HTTP REST PARA O BACK-END PYTHON (FastAPI / Flask / Django)
- * ============================================================================
- * Defina `VITE_API_URL=http://localhost:8000/api` no arquivo `.env` quando o
- * servidor Python estiver rodando. Caso `VITE_API_URL` não esteja definida ou o
- * back-end esteja offline em ambiente de desenvolvimento, o helper executa o
- * fallback local com o mesmo formato JSON esperado da API REST.
- */
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
-
-async function requestPythonRest(endpoint, { method = 'GET', params = null, body = null, fallback }) {
-    if (API_BASE_URL) {
-        try {
-            const url = new URL(`${API_BASE_URL}${endpoint}`);
-            if (params) {
-                Object.entries(params).forEach(([k, v]) => {
-                    if (v !== undefined && v !== null && v !== '') {
-                        url.searchParams.set(k, String(v));
-                    }
-                });
-            }
-
-            const user = getCurrentUser();
-            const headers = { Accept: 'application/json' };
-            if (user?.token) {
-                headers.Authorization = `Bearer ${user.token}`;
-            }
-            if (body && !(body instanceof FormData)) {
-                headers['Content-Type'] = 'application/json';
-            }
-
-            const response = await fetch(url.toString(), {
-                method,
-                headers,
-                body: body ? (body instanceof FormData ? body : JSON.stringify(body)) : undefined,
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            return await response.json();
-        } catch (err) {
-            if (!fallback) throw err;
-        }
-    }
-
-    return fallback();
-}
-
 export const subjectService = {
+    // ========================================================================
+    // DISCIPLINAS
+    // Atenção à ordem no FastAPI: declare `/api/subjects/favorites`, `/all` e
+    // `/filters` ANTES de `/api/subjects/{tag}`.
+    // ========================================================================
+
     /**
-     * ------------------------------------------------------------------------
-     * 1. DISCIPLINAS FAVORITAS (Tela Inicial — `/home`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/subjects/favorites`
-     * Header: `Authorization: Bearer <token>`
-     * Enviado pelo Front-end: Nenhum parâmetro de corpo ou query.
+     * Disciplinas favoritas do usuário (tela inicial `/home`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
+     * **`GET /api/subjects/favorites`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/subjects/favorites", response_model=list[FavoriteSubjectOut])
+     * async def list_favorites(user = Depends(get_current_user)): ...
+     * ```
+     * Response 200: `list[FavoriteSubjectOut]`, ex.:
      * ```json
-     * [
-     *   {
-     *     "id": 1,
-     *     "tag": "CAL1001",
-     *     "name": "Cálculo I",
-     *     "teacher": "Profa. Ana Martins",
-     *     "description": "Ciência da Computação • 2026.2",
-     *     "resourcesQty": 24
-     *   }
-     * ]
+     * [{ "id": 1, "tag": "CAL1001", "name": "Cálculo I", "teacher": "Profa. Ana Martins",
+     *    "description": "Ciência da Computação • 2026.2", "resourcesQty": 24 }]
      * ```
      */
     getFavorites: async () => {
-        return requestPythonRest('/subjects/favorites', {
-            method: 'GET',
-            fallback: async () => {
-                await wait(250);
-                return SUBJECTS;
-            },
+        return apiRequest('/api/subjects/favorites', {
+            mockDelay: 250,
+            fallback: () => SUBJECTS,
         });
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 2. LISTA COMPLETA DE DISCIPLINAS (Combobox de Formulários — `/conteudos/novo`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/subjects/all`
-     * Enviado pelo Front-end: Nenhum parâmetro.
+     * Lista completa de disciplinas (combobox de `/conteudos/novo`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
+     * **`GET /api/subjects/all`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/subjects/all", response_model=list[SubjectOptionOut])
+     * async def list_all_subjects(user = Depends(get_current_user)): ...
+     * ```
+     * Response 200: `list[SubjectOptionOut]`, ex.:
      * ```json
-     * [
-     *   {
-     *     "tag": "CAL1001",
-     *     "name": "Cálculo I",
-     *     "label": "Cálculo I — CAL1001",
-     *     "teacher": "Profa. Ana Martins",
-     *     "courseLabel": "Ciência da Computação"
-     *   }
-     * ]
+     * [{ "tag": "CAL1001", "name": "Cálculo I", "label": "Cálculo I — CAL1001",
+     *    "teacher": "Profa. Ana Martins", "courseLabel": "Ciência da Computação" }]
      * ```
      */
     getAllSubjects: async () => {
-        return requestPythonRest('/subjects/all', {
-            method: 'GET',
-            fallback: async () => {
-                await wait(100);
-                return CATALOG.map((s) => ({
+        return apiRequest('/api/subjects/all', {
+            mockDelay: 100,
+            fallback: () =>
+                CATALOG.map((s) => ({
                     tag: s.tag,
                     name: s.name,
                     label: `${s.name} — ${s.tag}`,
                     teacher: s.teacher,
                     courseLabel: courseLabel(s.course),
-                }));
-            },
+                })),
         });
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 3. DETALHES DE UMA DISCIPLINA (Cabeçalho — `/disciplina/:tag`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/subjects/{tag}`
-     * Path Param enviado: `tag` (string, ex: `"CAL1001"`)
+     * Cabeçalho de uma disciplina (`/disciplina/:tag`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON ou 404):
-     * ```json
-     * {
-     *   "tag": "CAL1001",
-     *   "name": "Cálculo I",
-     *   "teacher": "Profa. Ana Martins",
-     *   "favorite": true,
-     *   "courseLabel": "Ciência da Computação",
-     *   "semester": "2026.2",
-     *   "counts": {
-     *     "all": 24,
-     *     "prova": 8,
-     *     "exercicio": 10,
-     *     "atividade": 2
-     *   }
-     * }
+     * **`GET /api/subjects/{tag}`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/subjects/{tag}", response_model=SubjectDetailOut)
+     * async def get_subject(tag: str, user = Depends(get_current_user)): ...
      * ```
+     * Response 200 (`SubjectDetailOut`):
+     * ```json
+     * { "tag": "CAL1001", "name": "Cálculo I", "teacher": "Profa. Ana Martins", "favorite": true,
+     *   "courseLabel": "Ciência da Computação", "semester": "2026.2",
+     *   "counts": { "all": 24, "prova": 8, "link": 2, "atividade": 2 } }
+     * ```
+     * Erros: 404 `"Disciplina não encontrada."` (o mock retorna `null`).
      */
     getSubject: async (tag) => {
-        return requestPythonRest(`/subjects/${encodeURIComponent(tag)}`, {
-            method: 'GET',
-            fallback: async () => {
-                await wait(200);
+        return apiRequest(`/api/subjects/${encodeURIComponent(tag)}`, {
+            mockDelay: 200,
+            fallback: () => {
                 const subject = CATALOG.find((s) => s.tag === tag);
                 if (!subject) return null;
                 return {
@@ -713,44 +905,35 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 4. RECURSOS DE UMA DISCIPLINA COM FILTRO E PAGINAÇÃO (`/disciplina/:tag`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/subjects/{tag}/resources`
-     * Path Param enviado: `tag` (string, ex: `"CAL1001"`)
-     * Query Params enviados:
-     *   - `category`: `'all' | 'prova' | 'exercicio' | 'atividade'`
-     *   - `search`: string (busca textual pelo título do recurso)
-     *   - `limit`: number (quantidade máxima de itens retornados)
+     * Recursos de uma disciplina, com filtro por categoria, busca e limite.
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * ```json
-     * {
-     *   "items": [
-     *     {
-     *       "id": "CAL1001-1",
-     *       "type": "prova",
-     *       "format": "PDF",
-     *       "title": "Prova 1 — Limites e continuidade",
-     *       "author": "Ana Martins",
-     *       "typeLabel": "Prova anterior",
-     *       "categoryLabel": "Provas anteriores",
-     *       "date": "19 out. 2026",
-     *       "pages": 4,
-     *       "size": "1,2 MB",
-     *       "href": "/conteudo/CAL1001-1"
-     *     }
-     *   ],
-     *   "total": 24
-     * }
+     * **`GET /api/subjects/{tag}/resources?category=prova&search=limites&limit=5`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/subjects/{tag}/resources", response_model=ResourceListOut)
+     * async def list_resources(
+     *     tag: str,
+     *     category: Literal["all", "prova", "link", "atividade"] = "all",
+     *     search: str | None = None,          # busca no título (sem acento)
+     *     limit: int = Query(5, ge=1),
+     *     user = Depends(get_current_user),
+     * ): ...
      * ```
+     * Response 200 (`ResourceListOut`):
+     * ```json
+     * { "items": [{ "id": "CAL1001-1", "type": "prova", "format": "PDF",
+     *     "title": "Prova 1 — Limites e continuidade", "author": "Ana Martins",
+     *     "typeLabel": "Prova anterior", "categoryLabel": "Provas anteriores",
+     *     "date": "19 out. 2026", "pages": 4, "size": "1,2 MB", "href": "/conteudo/CAL1001-1" }],
+     *   "total": 24 }
+     * ```
+     * Erros: 404 `"Disciplina não encontrada."` (o mock retorna lista vazia).
      */
     getResources: async ({ tag, category = 'all', search = '', limit = 5 } = {}) => {
-        return requestPythonRest(`/subjects/${encodeURIComponent(tag)}/resources`, {
-            method: 'GET',
+        return apiRequest(`/api/subjects/${encodeURIComponent(tag)}/resources`, {
             params: { category, search, limit },
-            fallback: async () => {
-                await wait(200);
+            mockDelay: 200,
+            fallback: () => {
                 const subject = CATALOG.find((s) => s.tag === tag);
                 if (!subject) return { items: [], total: 0 };
 
@@ -767,28 +950,27 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 5. OPÇÕES DE FILTRO DO CATÁLOGO (`/explorar`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/subjects/filters`
-     * Query Params enviados:
-     *   - `course`: string opcional (ex: `'cc'`, `'ee'` ou `''` para todos)
+     * Opções dos filtros do catálogo (`/explorar`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
+     * **`GET /api/subjects/filters?course=cc`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/subjects/filters", response_model=FilterOptionsOut)
+     * async def filter_options(course: str | None = None,   # restringe subjects/teachers
+     *                          user = Depends(get_current_user)): ...
+     * ```
+     * Response 200 (`FilterOptionsOut`):
      * ```json
-     * {
-     *   "courses": [{ "value": "cc", "label": "Ciência da Computação" }],
+     * { "courses": [{ "value": "cc", "label": "Ciência da Computação" }],
      *   "subjects": [{ "value": "CAL1001", "label": "Cálculo I" }],
-     *   "teachers": [{ "value": "Profa. Ana Martins", "label": "Profa. Ana Martins" }]
-     * }
+     *   "teachers": [{ "value": "Profa. Ana Martins", "label": "Profa. Ana Martins" }] }
      * ```
      */
     getFilterOptions: async (course = '') => {
-        return requestPythonRest('/subjects/filters', {
-            method: 'GET',
+        return apiRequest('/api/subjects/filters', {
             params: { course },
-            fallback: async () => {
-                await wait(150);
+            mockDelay: 150,
+            fallback: () => {
                 const scoped = CATALOG.filter((s) => !course || s.course === course);
                 return {
                     courses: COURSES,
@@ -803,46 +985,35 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 6. BUSCA PAGINADA NO CATÁLOGO DE DISCIPLINAS (`/explorar`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/subjects`
-     * Query Params enviados:
-     *   - `search`: string
-     *   - `course`: string
-     *   - `subject`: string (tag da disciplina)
-     *   - `teacher`: string
-     *   - `page`: number (página atual, iniciando em 1)
-     *   - `pageSize`: number (itens por página, ex: 6)
+     * Busca paginada no catálogo de disciplinas (`/explorar`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
+     * **`GET /api/subjects?search=&course=cc&subject=CAL1001&teacher=&page=1&pageSize=6`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/subjects", response_model=CatalogPageOut)
+     * async def search_catalog(
+     *     search: str | None = None,          # nome ou tag (sem acento)
+     *     course: str | None = None,
+     *     subject: str | None = None,         # tag exata
+     *     teacher: str | None = None,         # nome exato
+     *     page: int = Query(1, ge=1),
+     *     page_size: int = Query(6, ge=1, alias="pageSize"),
+     *     user = Depends(get_current_user),
+     * ): ...
+     * ```
+     * Response 200 (`CatalogPageOut`):
      * ```json
-     * {
-     *   "items": [
-     *     {
-     *       "id": 1,
-     *       "tag": "ALI1001",
-     *       "name": "Álgebra Linear",
-     *       "teacher": "Profa. Beatriz Lima",
-     *       "course": "cc",
-     *       "semester": "2026.2",
-     *       "resourcesQty": 16,
-     *       "favorite": true,
-     *       "description": "Ciência da Computação • 2026.2"
-     *     }
-     *   ],
-     *   "total": 8,
-     *   "page": 1,
-     *   "totalPages": 2
-     * }
+     * { "items": [{ "id": 1, "tag": "ALI1001", "name": "Álgebra Linear", "teacher": "Profa. Beatriz Lima",
+     *     "course": "cc", "semester": "2026.2", "resourcesQty": 16, "favorite": true,
+     *     "description": "Ciência da Computação • 2026.2" }],
+     *   "total": 8, "page": 1, "totalPages": 2 }
      * ```
      */
     getCatalog: async ({ search = '', course = '', subject = '', teacher = '', page = 1, pageSize = 6 } = {}) => {
-        return requestPythonRest('/subjects', {
-            method: 'GET',
+        return apiRequest('/api/subjects', {
             params: { search, course, subject, teacher, page, pageSize },
-            fallback: async () => {
-                await wait(250);
+            mockDelay: 250,
+            fallback: () => {
                 const term = normalize(search.trim());
 
                 const filtered = CATALOG.filter(
@@ -870,38 +1041,36 @@ export const subjectService = {
         });
     },
 
+    // ========================================================================
+    // CONTEÚDOS (visualização) — `id` pode ser um recurso ("CAL1001-1") ou
+    // uma contribuição do usuário ("CONTRIB-1").
+    // ========================================================================
+
     /**
-     * ------------------------------------------------------------------------
-     * 7. CONTEÚDO EM PDF (`/conteudo/:id`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/contents/pdf/{id}`
-     * Path Param enviado: `id` (string, ex: `"CAL1001-1"` ou `"CONTRIB-1"`)
+     * Conteúdo em PDF (`/conteudo/:id`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
+     * **`GET /api/contents/pdf/{id}`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/contents/pdf/{content_id}", response_model=ContentPdfOut)
+     * async def get_content_pdf(content_id: str, user = Depends(get_current_user)): ...
+     * ```
+     * Response 200 (`ContentPdfOut`):
      * ```json
-     * {
-     *   "id": "CAL1001-1",
-     *   "subjectTag": "CAL1001",
-     *   "subjectName": "Cálculo I",
-     *   "teacher": "Profa. Ana Martins",
-     *   "date": "19 out. 2026",
-     *   "categoryLabel": "Provas anteriores",
-     *   "shortTitle": "Prova 1",
+     * { "id": "CAL1001-1", "subjectTag": "CAL1001", "subjectName": "Cálculo I",
+     *   "teacher": "Profa. Ana Martins", "courseLabel": "Ciência da Computação", "semester": "2026.2",
+     *   "date": "19 out. 2026", "categoryLabel": "Provas anteriores", "shortTitle": "Prova 1",
      *   "title": "Prova 1 — Limites e continuidade",
      *   "description": "Cálculo I • Profa. Ana Martins • Publicado em 19 out. 2026",
-     *   "typeLabel": "Prova anterior",
-     *   "info": "PDF • 1,2 MB • 4 páginas",
-     *   "fileName": "prova_1_calculo_I.pdf",
-     *   "fileUrl": "https://.../arquivos/prova_1_calculo_I.pdf",
-     *   "pages": 4
-     * }
+     *   "typeLabel": "Prova anterior", "info": "PDF • 1,2 MB • 4 páginas",
+     *   "fileName": "prova_1_calculo_I.pdf", "fileUrl": "https://.../prova_1_calculo_I.pdf", "pages": 4 }
      * ```
+     * Erros: 404 `"Conteúdo não encontrado."` (o mock devolve um PDF padrão).
      */
     getContentPDF: async (id) => {
-        return requestPythonRest(`/contents/pdf/${encodeURIComponent(id || '')}`, {
-            method: 'GET',
-            fallback: async () => {
-                await wait(150);
+        return apiRequest(`/api/contents/pdf/${encodeURIComponent(id || '')}`, {
+            mockDelay: 150,
+            fallback: () => {
                 const contrib = readStoredContributions().find((c) => c.id === id);
                 if (contrib) {
                     return {
@@ -947,52 +1116,37 @@ export const subjectService = {
         });
     },
 
-    /** Alias para busca de conteúdo PDF por ID. */
+    /** Alias de `getContentPDF` (mesma rota `GET /api/contents/pdf/{id}`). */
     getResourceById: async (id) => {
         return subjectService.getContentPDF(id);
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 8. CONTEÚDO DO TIPO LINK (`/conteudo-link/:id`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/contents/link/{id}`
-     * Path Param enviado: `id` (string, ex: `"CAL1001-4"`)
+     * Conteúdo do tipo link (`/conteudo-link/:id`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * ```json
-     * {
-     *   "id": "CAL1001-4",
-     *   "subjectTag": "CAL1001",
-     *   "subjectName": "Cálculo I",
-     *   "teacher": "Profa. Ana Martins",
-     *   "date": "15 out. 2026",
-     *   "categoryLabel": "Links recomendados",
-     *   "shortTitle": "Limites",
-     *   "title": "Limites: uma abordagem visual",
-     *   "description": "Cálculo I • Profa. Ana Martins • Publicado em 15 out. 2026",
-     *   "typeLabel": "Link recomendado",
-     *   "info": "Vídeos e sites • 4 referências de estudo",
-     *   "links": [
-     *     {
-     *       "id": "link-1",
-     *       "kind": "video",
-     *       "kindLabel": "Vídeo-aula",
-     *       "title": "Limites na prática — Explicação visual passo a passo",
-     *       "description": "Aula em vídeo demonstrando a intuição geométrica...",
-     *       "source": "YouTube • Canal Acadêmico UDESC",
-     *       "duration": "18 min",
-     *       "url": "https://www.youtube.com/watch?v=..."
-     *     }
-     *   ]
-     * }
+     * **`GET /api/contents/link/{id}`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/contents/link/{content_id}", response_model=ContentLinkOut)
+     * async def get_content_link(content_id: str, user = Depends(get_current_user)): ...
      * ```
+     * Response 200 (`ContentLinkOut`; campos de `ContentBase` como em `getContentPDF`):
+     * ```json
+     * { "id": "CAL1001-4", "...": "...", "typeLabel": "Link recomendado",
+     *   "info": "Vídeos e sites • 4 referências de estudo",
+     *   "mainUrl": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+     *   "links": [{ "id": "link-1", "kind": "video", "kindLabel": "Vídeo-aula",
+     *     "title": "Limites na prática — Explicação visual passo a passo", "description": "...",
+     *     "source": "YouTube • Canal Acadêmico UDESC", "duration": "18 min",
+     *     "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+     *     "embedUrl": "https://www.youtube.com/embed/WUvTyaaNkzM" }] }
+     * ```
+     * Erros: 404 `"Conteúdo não encontrado."` (o mock devolve um link padrão).
      */
     getContentLink: async (id) => {
-        return requestPythonRest(`/contents/link/${encodeURIComponent(id || '')}`, {
-            method: 'GET',
-            fallback: async () => {
-                await wait(150);
+        return apiRequest(`/api/contents/link/${encodeURIComponent(id || '')}`, {
+            mockDelay: 150,
+            fallback: () => {
                 const contrib = readStoredContributions().find((c) => c.id === id);
                 if (contrib && contrib.links?.length) {
                     return {
@@ -1037,59 +1191,34 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 9. CONTEÚDO DO TIPO ATIVIDADE / EXERCÍCIO (`/conteudo-atividade/:id`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/contents/activity/{id}`
-     * Path Param enviado: `id` (string, ex: `"CAL1001-6"`)
+     * Conteúdo do tipo atividade / exercício (`/conteudo-atividade/:id`).
+     * A correção é feita no front-end comparando com `correctAnswer`.
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * ```json
-     * {
-     *   "id": "CAL1001-6",
-     *   "subjectTag": "CAL1001",
-     *   "subjectName": "Cálculo I",
-     *   "teacher": "Profa. Ana Martins",
-     *   "date": "14 out. 2026",
-     *   "categoryLabel": "Atividades",
-     *   "shortTitle": "Atividade 02",
-     *   "title": "Atividade 02 — Limites",
-     *   "description": "Cálculo I • Profa. Ana Martins • Valor: 10,0 pontos",
-     *   "questions": [
-     *     {
-     *       "id": "q1",
-     *       "number": "01",
-     *       "title": "Substituição direta",
-     *       "points": "2,0 pontos",
-     *       "type": "multiple_choice",
-     *       "statement": "Qual é o valor de lim x → 2 de (3x² − 2x + 1)?",
-     *       "options": [
-     *         { "id": "A", "label": "A. 5" },
-     *         { "id": "B", "label": "B. 9" },
-     *         { "id": "C", "label": "C. 11" },
-     *         { "id": "D", "label": "D. O limite não existe" }
-     *       ],
-     *       "correctAnswer": "B"
-     *     },
-     *     {
-     *       "id": "q2",
-     *       "number": "02",
-     *       "title": "Resolva a indeterminação",
-     *       "points": "4,0 pontos",
-     *       "type": "direct_result",
-     *       "statement": "Calcule o valor numérico exato de lim x → 3 de (x² − 9) / (x − 3).",
-     *       "placeholder": "Digite apenas o resultado numérico",
-     *       "correctAnswer": "6"
-     *     }
-     *   ]
-     * }
+     * **`GET /api/contents/activity/{id}`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/contents/activity/{content_id}", response_model=ContentActivityOut)
+     * async def get_content_activity(content_id: str, user = Depends(get_current_user)): ...
      * ```
+     * Response 200 (`ContentActivityOut`; campos de `ContentBase` como em `getContentPDF`,
+     * com `description` = "Cálculo I • Profa. Ana Martins • Valor: 10,0 pontos"):
+     * ```json
+     * { "id": "CAL1001-6", "...": "...",
+     *   "questions": [
+     *     { "id": "q1", "number": "01", "title": "Substituição direta", "points": "2,0 pontos",
+     *       "type": "multiple_choice", "statement": "Qual é o valor de lim x → 2 de (3x² − 2x + 1)?",
+     *       "options": [{ "id": "A", "label": "A. 5" }, { "id": "B", "label": "B. 9" }],
+     *       "correctAnswer": "B" },
+     *     { "id": "q2", "number": "02", "title": "Resolva a indeterminação", "points": "4,0 pontos",
+     *       "type": "direct_result", "statement": "Calcule lim x → 3 de (x² − 9) / (x − 3).",
+     *       "placeholder": "Digite apenas o resultado numérico (ex: 6)", "correctAnswer": "6" } ] }
+     * ```
+     * Erros: 404 `"Conteúdo não encontrado."` (o mock devolve uma atividade padrão).
      */
     getContentActivity: async (id) => {
-        return requestPythonRest(`/contents/activity/${encodeURIComponent(id || '')}`, {
-            method: 'GET',
-            fallback: async () => {
-                await wait(150);
+        return apiRequest(`/api/contents/activity/${encodeURIComponent(id || '')}`, {
+            mockDelay: 150,
+            fallback: () => {
                 const contrib = readStoredContributions().find((c) => c.id === id);
                 if (contrib && contrib.questions?.length) {
                     return {
@@ -1127,46 +1256,55 @@ export const subjectService = {
         });
     },
 
+    // ========================================================================
+    // CONTRIBUIÇÕES — materiais enviados pelo próprio usuário (aluno ou professor).
+    // Declare `/api/contributions/me` ANTES de `/api/contributions/{id}`.
+    // ========================================================================
+
     /**
-     * ------------------------------------------------------------------------
-     * 10. LISTAR CONTRIBUIÇÕES DO USUÁRIO (`/conteudos`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/contributions/me`
-     * Header: `Authorization: Bearer <token>`
+     * Contribuições do usuário autenticado (`/conteudos`), paginadas e ordenadas
+     * da mais recente para a mais antiga.
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * ```json
-     * [
-     *   {
-     *     "id": "CONTRIB-1",
-     *     "title": "Resumo — Limites e continuidade",
-     *     "subjectTag": "CAL1001",
-     *     "subjectName": "Cálculo I",
-     *     "teacher": "Profa. Ana Martins",
-     *     "resourceType": "arquivo",
-     *     "typeLabel": "Arquivo PDF",
-     *     "format": "PDF",
-     *     "date": "20 out. 2026",
-     *     "timestamp": 1761000000,
-     *     "status": "pendente",
-     *     "requestCode": "SOL-024",
-     *     "submittedAt": "20 out. 2026, às 14h20",
-     *     "author": "Mariana Costa",
-     *     "href": "/conteudo/CONTRIB-1"
-     *   }
-     * ]
+     * **`GET /api/contributions/me?page=1&pageSize=5`** — aluno ou professor.
+     *
+     * ```python
+     * @router.get("/api/contributions/me", response_model=ContributionPageOut)
+     * async def my_contributions(
+     *     page: int = Query(1, ge=1),
+     *     page_size: int = Query(5, ge=1, le=50, alias="pageSize"),
+     *     user = Depends(require_role("aluno", "professor")),
+     * ):
+     *     query = select(Contribution).where(Contribution.author_id == user.id)
+     *     total = await db.scalar(select(func.count()).select_from(query.subquery()))
+     *     rows = await db.scalars(
+     *         query.order_by(Contribution.timestamp.desc())
+     *              .offset((page - 1) * page_size).limit(page_size)
+     *     )
+     *     return {"items": rows.all(), "total": total, "page": page, "page_size": page_size}
      * ```
+     * Response 200 (`ContributionPageOut`), itens com `href` preenchido
+     * (`/conteudo-atividade/{id}` para exercicio, `/conteudo-link/{id}` para link, senão `/conteudo/{id}`):
+     * ```json
+     * { "total": 7, "page": 1, "pageSize": 5, "items": [{ "id": "CONTRIB-1", "title": "Resumo — Limites e continuidade", "subjectTag": "CAL1001",
+     *    "subjectName": "Cálculo I", "teacher": "Profa. Ana Martins", "resourceType": "arquivo",
+     *    "typeLabel": "Arquivo PDF", "format": "PDF", "date": "20 out. 2026", "timestamp": 1761000000,
+     *    "status": "pendente", "requestCode": "SOL-024", "submittedAt": "20 out. 2026, às 14h20",
+     *    "author": "Mariana Costa", "href": "/conteudo/CONTRIB-1" }] }
+     * ```
+     * Uma página além da última retorna `items: []` com o `total` correto.
+     * Erros: 403 `"Acesso restrito a alunos e professores."`, 422 se `page`/`pageSize` inválidos.
      */
-    getMyContributions: async () => {
-        return requestPythonRest('/contributions/me', {
-            method: 'GET',
-            fallback: async () => {
-                await wait(150);
+    getMyContributions: async ({ page = 1, pageSize = 5 } = {}) => {
+        return apiRequest('/api/contributions/me', {
+            params: { page, pageSize },
+            mockDelay: 150,
+            fallback: () => {
                 const user = getCurrentUser();
                 const isProfessor = String(user.role || '').toLowerCase() === 'professor';
-                const list = readStoredContributions();
+                const sorted = [...readStoredContributions()].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                const start = (page - 1) * pageSize;
 
-                return list.map((item) => ({
+                const items = sorted.slice(start, start + pageSize).map((item) => ({
                     ...item,
                     status: isProfessor ? 'publicado' : item.status,
                     href:
@@ -1176,27 +1314,31 @@ export const subjectService = {
                                 ? `/conteudo-link/${item.id}`
                                 : `/conteudo/${item.id}`,
                 }));
+
+                return { items, total: sorted.length, page, pageSize };
             },
         });
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 11. BUSCAR UMA CONTRIBUIÇÃO PARA EDIÇÃO (`/conteudos/editar/:id`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/contributions/{id}`
-     * Path Param enviado: `id` (string)
+     * Uma contribuição completa, para edição (`/conteudos/editar/:id`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * Objeto completo da contribuição contendo `id`, `title`, `subjectTag`, `teacher`,
-     * `resourceType` (`'arquivo' | 'exercicio' | 'link'`), `description`, `supportUrl`,
-     * `citation`, `fileName`, `fileSize`, `fileUrl`, `questions`, `links`, `requestCode`, `submittedAt`.
+     * **`GET /api/contributions/{id}`** — aluno ou professor (somente o autor).
+     *
+     * ```python
+     * @router.get("/api/contributions/{contribution_id}", response_model=ContributionOut)
+     * async def get_contribution(contribution_id: str,
+     *                            user = Depends(require_role("aluno", "professor"))): ...
+     * ```
+     * Response 200: `ContributionOut` (com `questions`, `links`, `fileName`, `fileUrl`, etc.).
+     * Erros:
+     * - 403 `"Você não é o autor desta contribuição."`
+     * - 404 `"Contribuição não encontrada."` (o mock retorna `null`)
      */
     getContributionById: async (id) => {
-        return requestPythonRest(`/contributions/${encodeURIComponent(id || '')}`, {
-            method: 'GET',
-            fallback: async () => {
-                await wait(100);
+        return apiRequest(`/api/contributions/${encodeURIComponent(id || '')}`, {
+            mockDelay: 100,
+            fallback: () => {
                 const list = readStoredContributions();
                 return list.find((item) => item.id === id) || null;
             },
@@ -1204,47 +1346,47 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 12. CRIAR OU ATUALIZAR CONTRIBUIÇÃO (`/conteudos/novo` e `/conteudos/editar/:id`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST:
-     *   - Criação: `POST /api/contributions`
-     *   - Edição:  `PUT /api/contributions/{id}`
+     * Cria (sem `payload.id`) ou atualiza (com `payload.id`) uma contribuição.
+     * O back-end define `status`: `"publicado"` para professor, `"pendente"` para aluno
+     * (que gera uma solicitação de moderação em `/api/admin/requests`).
      *
-     * Corpo JSON enviado pelo Front-end (`payload`):
-     * ```json
-     * {
-     *   "id": "CONTRIB-1",          // Opcional (presente apenas em edição)
-     *   "title": "Resumo — Limites",
-     *   "subjectTag": "CAL1001",
-     *   "teacher": "Profa. Ana Martins",
-     *   "resourceType": "arquivo",  // "arquivo" | "exercicio" | "link"
-     *   "description": "Descrição detalhada...",
-     *   "supportUrl": "https://...",
-     *   "citation": "Material autoral...",
-     *   "fileName": "resumo.pdf",   // Quando resourceType === "arquivo"
-     *   "fileSize": "842 KB",
-     *   "fileUrl": "blob:...",
-     *   "questions": [],            // Quando resourceType === "exercicio"
-     *   "links": []                 // Quando resourceType === "link"
-     * }
+     * **`POST /api/contributions`** e **`PUT /api/contributions/{id}`** — aluno ou professor.
+     *
+     * ```python
+     * @router.post("/api/contributions", response_model=ContributionOut, status_code=201)
+     * async def create_contribution(data: ContributionIn,
+     *                               user = Depends(require_role("aluno", "professor"))): ...
+     *
+     * @router.put("/api/contributions/{contribution_id}", response_model=ContributionOut)
+     * async def update_contribution(contribution_id: str, data: ContributionIn,
+     *                               user = Depends(require_role("aluno", "professor"))): ...
      * ```
-     *
-     * Retorno esperado do Back-end Python (Status 201/200 JSON):
-     * Objeto salvo contendo `id`, `status` (`"pendente"` para aluno, `"publicado"` para professor),
-     * `requestCode` (ex: `"SOL-025"`) e `submittedAt` (ex: `"20 out. 2026, às 14h20"`).
+     * Request (`ContributionIn`):
+     * ```json
+     * { "id": "CONTRIB-1", "title": "Resumo — Limites", "subjectTag": "CAL1001",
+     *   "teacher": "Profa. Ana Martins", "resourceType": "arquivo", "description": "...",
+     *   "supportUrl": "https://...", "citation": "Material autoral...",
+     *   "fileName": "resumo.pdf", "fileSize": "842 KB", "fileUrl": "blob:...",
+     *   "questions": [], "links": [] }
+     * ```
+     * Response 201/200: `ContributionOut` — a tela usa `requestCode` (ex.: "SOL-025") e
+     * `submittedAt` (ex.: "20 out. 2026, às 14h20").
+     * Erros:
+     * - 403 `"Você não é o autor desta contribuição."` (PUT)
+     * - 404 `"Disciplina não encontrada."` / `"Contribuição não encontrada."` (PUT)
+     * - 422 validação
      */
     saveContribution: async (payload) => {
         const isUpdate = Boolean(payload?.id);
         const endpoint = isUpdate
-            ? `/contributions/${encodeURIComponent(payload.id)}`
-            : '/contributions';
+            ? `/api/contributions/${encodeURIComponent(payload.id)}`
+            : '/api/contributions';
 
-        return requestPythonRest(endpoint, {
+        return apiRequest(endpoint, {
             method: isUpdate ? 'PUT' : 'POST',
             body: payload,
-            fallback: async () => {
-                await wait(200);
+            mockDelay: 200,
+            fallback: () => {
                 const user = getCurrentUser();
                 const isProfessor = String(user.role || '').toLowerCase() === 'professor';
                 const list = readStoredContributions();
@@ -1311,20 +1453,25 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 13. EXCLUIR CONTRIBUIÇÃO (`/conteudos`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `DELETE /api/contributions/{id}`
-     * Path Param enviado: `id` (string)
+     * Exclui uma contribuição do usuário. A tela ignora o retorno e recarrega a lista.
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * `{ "success": true, "deletedId": "CONTRIB-1" }`
+     * **`DELETE /api/contributions/{id}`** — aluno ou professor (somente o autor).
+     *
+     * ```python
+     * @router.delete("/api/contributions/{contribution_id}", status_code=204)
+     * async def delete_contribution(contribution_id: str,
+     *                               user = Depends(require_role("aluno", "professor"))) -> None: ...
+     * ```
+     * Response: 204 sem corpo (o mock retorna a lista restante).
+     * Erros:
+     * - 403 `"Você não é o autor desta contribuição."`
+     * - 404 `"Contribuição não encontrada."`
      */
     deleteContribution: async (id) => {
-        return requestPythonRest(`/contributions/${encodeURIComponent(id || '')}`, {
+        return apiRequest(`/api/contributions/${encodeURIComponent(id || '')}`, {
             method: 'DELETE',
-            fallback: async () => {
-                await wait(100);
+            mockDelay: 100,
+            fallback: () => {
                 const list = readStoredContributions();
                 const updated = list.filter((item) => item.id !== id);
                 try {
@@ -1337,32 +1484,32 @@ export const subjectService = {
         });
     },
 
+    // ========================================================================
+    // ANOTAÇÕES — notas pessoais do usuário sobre um recurso/contribuição.
+    // Sempre filtradas pelo usuário do token.
+    // ========================================================================
+
     /**
-     * ------------------------------------------------------------------------
-     * 14. LISTAR ANOTAÇÕES DE UM RECURSO ESPECÍFICO (`NotesCard`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/annotations/{resourceId}/notes`
-     * Path Param enviado: `resourceId` (string, ex: `"CAL1001-1"`)
-     * Header: `Authorization: Bearer <token>`
+     * Anotações do usuário em um recurso (`NotesCard`). Não faz requisição sem `resourceId`.
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
+     * **`GET /api/annotations/{resourceId}/notes`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/annotations/{resource_id}/notes", response_model=list[NoteOut])
+     * async def list_notes(resource_id: str, user = Depends(get_current_user)): ...
+     * ```
+     * Response 200: `list[NoteOut]` (mais recente primeiro; `[]` se não houver), ex.:
      * ```json
-     * [
-     *   {
-     *     "id": "note-1",
-     *     "title": "Revisar a questão 02",
-     *     "content": "Antes de substituir, fatorar x² − 9 = (x − 3)(x + 3). O limite é 6.",
-     *     "date": "20 out. 2026"
-     *   }
-     * ]
+     * [{ "id": "note-1", "title": "Revisar a questão 02",
+     *    "content": "Antes de substituir, fatorar x² − 9 = (x − 3)(x + 3). O limite é 6.",
+     *    "date": "20 out. 2026" }]
      * ```
      */
     getNotes: async (resourceId) => {
         if (!resourceId) return [];
-        return requestPythonRest(`/annotations/${encodeURIComponent(resourceId)}/notes`, {
-            method: 'GET',
-            fallback: async () => {
-                await wait(100);
+        return apiRequest(`/api/annotations/${encodeURIComponent(resourceId)}/notes`, {
+            mockDelay: 100,
+            fallback: () => {
                 const key = getNotesStorageKey(resourceId);
                 const defaultNotes = INITIAL_NOTES_BY_RESOURCE[resourceId] || INITIAL_NOTES;
                 try {
@@ -1381,29 +1528,25 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 15. SALVAR / CRIAR ANOTAÇÃO EM UM RECURSO (`NotesCard` e `AnnotationDetails`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `POST /api/annotations/{resourceId}/notes`
-     * Path Param enviado: `resourceId` (string)
-     * Corpo JSON enviado pelo Front-end:
-     * ```json
-     * {
-     *   "title": "Revisar a questão 02",
-     *   "content": "Texto da anotação..."
-     * }
-     * ```
+     * Cria uma anotação em um recurso. Uma nota com o mesmo `title` é substituída.
      *
-     * Retorno esperado do Back-end Python (Status 201 JSON):
-     * Array atualizado de anotações daquele `resourceId`:
-     * `[ { "id": "note-123", "title": "...", "content": "...", "date": "20 out. 2026" }, ... ]`
+     * **`POST /api/annotations/{resourceId}/notes`** — autenticado.
+     *
+     * ```python
+     * @router.post("/api/annotations/{resource_id}/notes", response_model=list[NoteOut], status_code=201)
+     * async def create_note(resource_id: str, data: NoteIn, user = Depends(get_current_user)): ...
+     * ```
+     * Request (`NoteIn`): `{ "title": "Revisar a questão 02", "content": "Texto da anotação..." }`
+     * Response 201: `list[NoteOut]` — a LISTA COMPLETA atualizada do recurso (nova nota primeiro),
+     * pois a tela substitui o estado com o retorno.
+     * Erros: 404 `"Recurso não encontrado."`
      */
     saveNote: async (resourceId, { title, content }) => {
-        return requestPythonRest(`/annotations/${encodeURIComponent(resourceId)}/notes`, {
+        return apiRequest(`/api/annotations/${encodeURIComponent(resourceId)}/notes`, {
             method: 'POST',
             body: { title, content },
+            mockDelay: 100,
             fallback: async () => {
-                await wait(100);
                 const current = await subjectService.getNotes(resourceId);
                 const d = new Date();
                 const newNote = {
@@ -1424,24 +1567,25 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 16. EXCLUIR ANOTAÇÃO DE UM RECURSO (`NotesCard` e `AnnotationDetails`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `DELETE /api/annotations/{resourceId}/notes/{noteId}`
-     * Path Params enviados:
-     *   - `resourceId`: string
-     *   - `noteId`: string
+     * Exclui uma anotação de um recurso.
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * Array atualizado de anotações restantes daquele `resourceId`.
+     * **`DELETE /api/annotations/{resourceId}/notes/{noteId}`** — autenticado (dono da nota).
+     *
+     * ```python
+     * @router.delete("/api/annotations/{resource_id}/notes/{note_id}", response_model=list[NoteOut])
+     * async def delete_note(resource_id: str, note_id: str, user = Depends(get_current_user)): ...
+     * ```
+     * Response 200: `list[NoteOut]` — as notas RESTANTES do recurso (não use 204 aqui:
+     * a tela substitui o estado com o retorno).
+     * Erros: 404 `"Anotação não encontrada."`
      */
     deleteNote: async (resourceId, noteId) => {
-        return requestPythonRest(
-            `/annotations/${encodeURIComponent(resourceId)}/notes/${encodeURIComponent(noteId)}`,
+        return apiRequest(
+            `/api/annotations/${encodeURIComponent(resourceId)}/notes/${encodeURIComponent(noteId)}`,
             {
                 method: 'DELETE',
+                mockDelay: 100,
                 fallback: async () => {
-                    await wait(100);
                     const current = await subjectService.getNotes(resourceId);
                     const updated = current.filter((n) => n.id !== noteId);
                     try {
@@ -1456,54 +1600,34 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 17. LISTAR CONTEÚDOS COM ANOTAÇÕES POR ABA E PAGINAÇÃO (`Annotations` — `/anotacoes`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/annotations`
-     * Header: `Authorization: Bearer <token>`
-     * Query Params enviados pelo Front-end:
-     *   - `category`: `'all' | 'prova' | 'link' | 'atividade' | 'outros'`
-     *   - `page`: number (página atual, iniciando em 1)
-     *   - `pageSize`: number (quantidade de itens por página, ex: 5)
+     * Conteúdos que têm anotações do usuário, por aba e paginados (`/anotacoes`).
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
+     * **`GET /api/annotations?category=all&page=1&pageSize=5`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/annotations", response_model=AnnotatedPageOut)
+     * async def list_annotated(
+     *     category: AnnotationCategory = "all",   # "outros" = exercicio + arquivo + livro
+     *     page: int = Query(1, ge=1),
+     *     page_size: int = Query(5, ge=1, alias="pageSize"),
+     *     user = Depends(get_current_user),
+     * ): ...
+     * ```
+     * Response 200 (`AnnotatedPageOut`; recursos sem notas não aparecem):
      * ```json
-     * {
-     *   "items": [
-     *     {
-     *       "id": "CAL1001-1",
-     *       "title": "Prova 1 — Limites e continuidade",
-     *       "type": "prova",
-     *       "typeLabel": "Prova anterior",
-     *       "format": "PDF",
-     *       "subjectTag": "CAL1001",
-     *       "subjectName": "Cálculo I",
-     *       "teacher": "Profa. Ana Martins",
-     *       "date": "19 out. 2026",
-     *       "href": "/conteudo/CAL1001-1",
-     *       "notesCount": 2
-     *     }
-     *   ],
-     *   "total": 2,
-     *   "page": 1,
-     *   "pageSize": 5,
-     *   "totalPages": 1,
-     *   "countsByCategory": {
-     *     "all": 11,
-     *     "prova": 4,
-     *     "link": 3,
-     *     "atividade": 3,
-     *     "outros": 2
-     *   }
-     * }
+     * { "items": [{ "id": "CAL1001-1", "title": "Prova 1 — Limites e continuidade", "type": "prova",
+     *     "typeLabel": "Prova anterior", "format": "PDF", "subjectTag": "CAL1001",
+     *     "subjectName": "Cálculo I", "teacher": "Profa. Ana Martins", "date": "19 out. 2026",
+     *     "href": "/conteudo/CAL1001-1", "notesCount": 2 }],
+     *   "total": 2, "page": 1, "pageSize": 5, "totalPages": 1,
+     *   "countsByCategory": { "all": 11, "prova": 4, "link": 3, "atividade": 3, "outros": 2 } }
      * ```
      */
     getAnnotatedResources: async ({ category = 'all', page = 1, pageSize = 5 } = {}) => {
-        return requestPythonRest('/annotations', {
-            method: 'GET',
+        return apiRequest('/api/annotations', {
             params: { category, page, pageSize },
-            fallback: async () => {
-                await wait(150);
+            mockDelay: 150,
+            fallback: () => {
                 const allItems = collectAllAnnotatedResources();
 
                 const categoryMatchers = {
@@ -1529,7 +1653,10 @@ export const subjectService = {
                 const currentPage = Math.min(Math.max(1, page), totalPages);
                 const start = (currentPage - 1) * pageSize;
 
-                const paginatedItems = filtered.slice(start, start + pageSize).map(({ notes, ...meta }) => meta);
+                // A listagem não inclui o array `notes` (apenas `notesCount`).
+                const paginatedItems = filtered
+                    .slice(start, start + pageSize)
+                    .map((item) => Object.fromEntries(Object.entries(item).filter(([key]) => key !== 'notes')));
 
                 return {
                     items: paginatedItems,
@@ -1544,43 +1671,30 @@ export const subjectService = {
     },
 
     /**
-     * ------------------------------------------------------------------------
-     * 18. DETALHE DE UM TÍTULO E SUAS ANOTAÇÕES (`AnnotationDetails` — `/anotacoes/:id`)
-     * ------------------------------------------------------------------------
-     * Método/Rota Python REST: `GET /api/annotations/{resourceId}`
-     * Path Param enviado: `resourceId` (string, ex: `"CAL1001-1"`)
-     * Header: `Authorization: Bearer <token>`
+     * Um conteúdo anotado com todas as suas notas (`/anotacoes/:id`).
+     * Não faz requisição sem `resourceId`.
      *
-     * Retorno esperado do Back-end Python (Status 200 JSON):
-     * ```json
-     * {
-     *   "id": "CAL1001-1",
-     *   "title": "Prova 1 — Limites e continuidade",
-     *   "type": "prova",
-     *   "typeLabel": "Prova anterior",
-     *   "format": "PDF",
-     *   "subjectTag": "CAL1001",
-     *   "subjectName": "Cálculo I",
-     *   "teacher": "Profa. Ana Martins",
-     *   "date": "19 out. 2026",
-     *   "href": "/conteudo/CAL1001-1",
-     *   "notes": [
-     *     {
-     *       "id": "note-1",
-     *       "title": "Revisar a questão 02",
-     *       "content": "Antes de substituir, fatorar x² − 9 = (x − 3)(x + 3). O limite é 6.",
-     *       "date": "20 out. 2026"
-     *     }
-     *   ]
-     * }
+     * **`GET /api/annotations/{resourceId}`** — autenticado.
+     *
+     * ```python
+     * @router.get("/api/annotations/{resource_id}", response_model=AnnotatedResourceDetailOut)
+     * async def get_annotated(resource_id: str, user = Depends(get_current_user)): ...
      * ```
+     * Response 200 (`AnnotatedResourceDetailOut`): mesmos campos de `AnnotatedResourceOut` + `notes`:
+     * ```json
+     * { "id": "CAL1001-1", "title": "Prova 1 — Limites e continuidade", "type": "prova",
+     *   "typeLabel": "Prova anterior", "format": "PDF", "subjectTag": "CAL1001",
+     *   "subjectName": "Cálculo I", "teacher": "Profa. Ana Martins", "date": "19 out. 2026",
+     *   "href": "/conteudo/CAL1001-1",
+     *   "notes": [{ "id": "note-1", "title": "Revisar a questão 02", "content": "...", "date": "20 out. 2026" }] }
+     * ```
+     * Erros: 404 `"Recurso não encontrado."` (com `notes: []` se existir mas não tiver notas).
      */
     getAnnotatedResourceById: async (resourceId) => {
         if (!resourceId) return null;
-        return requestPythonRest(`/annotations/${encodeURIComponent(resourceId)}`, {
-            method: 'GET',
+        return apiRequest(`/api/annotations/${encodeURIComponent(resourceId)}`, {
+            mockDelay: 120,
             fallback: async () => {
-                await wait(120);
                 const all = collectAllAnnotatedResources();
                 const found = all.find((r) => r.id === resourceId);
                 if (found) return found;

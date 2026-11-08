@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import SideSectionJoinSite from '../components/sideSectionJoinSite/sideSectionJoinSite';
 import InputField from '../components/common/InputField';
 import PrimaryButton from '../components/common/PrimaryButton';
@@ -54,7 +54,7 @@ function Login() {
                 height: { xs: 'auto', md: '100vh' },
                 maxHeight: { xs: 'none', md: '100vh' },
                 width: '100vw',
-                backgroundColor: '#ffffff',
+                backgroundColor: 'var(--c-surface)',
                 overflow: { xs: 'auto', md: 'hidden' },
                 boxSizing: 'border-box',
             }}
@@ -76,7 +76,7 @@ function Login() {
                         sm: '40px 24px',
                         md: 'clamp(14px, 2.2vh, 32px) clamp(24px, 3.5vw, 48px)',
                     },
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--c-surface)',
                     boxSizing: 'border-box',
                 }}
             >
@@ -92,9 +92,9 @@ function Login() {
 
                     <Typography
                         sx={{
-                            fontSize: '11px',
+                            fontSize: '0.6875rem',
                             fontWeight: 700,
-                            color: '#006b47',
+                            color: 'var(--c-primary)',
                             letterSpacing: '0.6px',
                             textTransform: 'uppercase',
                             marginBottom: '8px',
@@ -109,7 +109,7 @@ function Login() {
                         sx={{
                             fontSize: 'clamp(26px, 3.2vh, 32px)',
                             fontWeight: 700,
-                            color: '#111827',
+                            color: 'var(--c-text)',
                             letterSpacing: '-0.6px',
                             marginBottom: '6px',
                             lineHeight: 1.15,
@@ -121,8 +121,8 @@ function Login() {
 
                     <Typography
                         sx={{
-                            fontSize: '14px',
-                            color: '#6b7280',
+                            fontSize: '0.875rem',
+                            color: 'var(--c-text-muted)',
                             marginBottom: '24px',
                             fontFamily: 'system-ui, -apple-system, sans-serif',
                         }}
@@ -132,12 +132,12 @@ function Login() {
 
                     {/* Feedback da API (Erros ou Sucesso) */}
                     {errorMessage && (
-                        <Alert severity="error" sx={{ marginBottom: '16px', borderRadius: '7px', fontSize: '13px' }}>
+                        <Alert severity="error" sx={{ marginBottom: '16px', borderRadius: '7px', fontSize: '0.8125rem' }}>
                             {errorMessage}
                         </Alert>
                     )}
                     {successMessage && (
-                        <Alert severity="success" sx={{ marginBottom: '16px', borderRadius: '7px', fontSize: '13px' }}>
+                        <Alert severity="success" sx={{ marginBottom: '16px', borderRadius: '7px', fontSize: '0.8125rem' }}>
                             {successMessage}
                         </Alert>
                     )}
@@ -192,13 +192,13 @@ function Login() {
                                         size="small"
                                         sx={{
                                             padding: '4px',
-                                            color: '#9ca3af',
-                                            '&.Mui-checked': { color: '#006b47' },
+                                            color: 'var(--c-text-subtle)',
+                                            '&.Mui-checked': { color: 'var(--c-primary)' },
                                         }}
                                     />
                                 }
                                 label={
-                                    <Typography sx={{ fontSize: '13px', color: '#374151' }}>
+                                    <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-secondary)' }}>
                                         Manter conectado
                                     </Typography>
                                 }
@@ -206,11 +206,11 @@ function Login() {
                             />
 
                             <Box
-                                component="a"
-                                href="#forgot-password"
+                                component={RouterLink}
+                                to="/esqueci-senha"
                                 sx={{
-                                    color: '#006b47',
-                                    fontSize: '13px',
+                                    color: 'var(--c-primary)',
+                                    fontSize: '0.8125rem',
                                     fontWeight: 600,
                                     textDecoration: 'none',
                                     '&:hover': { textDecoration: 'underline' },
@@ -230,14 +230,14 @@ function Login() {
                         </PrimaryButton>
 
                         {/* Linha divisória */}
-                        <Divider sx={{ my: '18px', borderColor: '#e5e7eb' }} />
+                        <Divider sx={{ my: '18px', borderColor: 'var(--c-border)' }} />
 
                         {/* Link para cadastro */}
                         <Box
                             sx={{
                                 textAlign: 'center',
-                                fontSize: '13px',
-                                color: '#6b7280',
+                                fontSize: '0.8125rem',
+                                color: 'var(--c-text-muted)',
                             }}
                         >
                             Primeira vez por aqui?{' '}
@@ -245,7 +245,7 @@ function Login() {
                                 component="a"
                                 href="/sigin"
                                 sx={{
-                                    color: '#006b47',
+                                    color: 'var(--c-primary)',
                                     fontWeight: 600,
                                     textDecoration: 'none',
                                     cursor: 'pointer',

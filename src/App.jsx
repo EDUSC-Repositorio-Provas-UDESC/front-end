@@ -1,12 +1,12 @@
 //style
 import "./App.css";
 //react
-import React from "react";
-import { Routes, BrowserRouter, Route } from "react-router-dom";
+import { Routes, BrowserRouter, Route, Navigate } from "react-router-dom";
 
 //pages
 import Login from "./pages/login";
 import Sigin from "./pages/sigin";
+import ForgotPassword from "./pages/forgotPassword";
 import Home from "./pages/home";
 import Explore from "./pages/explore";
 import Subject from "./pages/subject";
@@ -20,6 +20,10 @@ import AnnotationDetails from "./pages/annotationDetails";
 // professor
 import TeacherDashboard from "./pages/professor/teacherDashboard";
 import CreateSubject from "./pages/professor/createSubject";
+// administrador
+import AdminRequests from "./pages/admin/adminRequests";
+import AdminCourses from "./pages/admin/adminCourses";
+import AdminProfiles from "./pages/admin/adminProfiles";
 
 function App() {
 
@@ -28,6 +32,7 @@ function App() {
       <Routes>
         <Route index path="/" element={<Login />} />
         <Route path="/sigin" element={<Sigin />} />
+        <Route path="/esqueci-senha" element={<ForgotPassword />} />
         <Route path="/home" element={<Home />} />
         <Route path="/explorar" element={<Explore />} />
         <Route path="/disciplina/:tag" element={<Subject />} />
@@ -46,6 +51,11 @@ function App() {
         {/* Rotas exclusivas do professor */}
         <Route path="/professor/painel" element={<TeacherDashboard />} />
         <Route path="/professor/criar-materia" element={<CreateSubject />} />
+        {/* Rotas exclusivas do administrador */}
+        <Route path="/admin" element={<Navigate to="/admin/solicitacoes" replace />} />
+        <Route path="/admin/solicitacoes" element={<AdminRequests />} />
+        <Route path="/admin/cursos" element={<AdminCourses />} />
+        <Route path="/admin/perfis" element={<AdminProfiles />} />
       </Routes>
     </BrowserRouter>
   )

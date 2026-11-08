@@ -1,11 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/edusc.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduSC</title>
+  <!-- Aplica tema e fonte salvos antes do React carregar (evita piscar o tema claro) -->
+  <script>
+    (function () {
+      try {
+        var p = JSON.parse(localStorage.getItem('udesc_estuda_prefs') || '{}');
+        var dark = p.theme ? p.theme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.dataset.fontSize = p.fontSize || 'medium';
+      } catch (e) {}
+    })();
+  </script>
 </head>
 
 <body>

@@ -287,7 +287,7 @@ function ContentForm() {
     ];
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#f4f6f5' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--c-bg)' }}>
             <SideBar
                 defaultActive="conteudos"
                 userName={authorName}
@@ -316,9 +316,9 @@ function ContentForm() {
                     <Typography
                         component="h1"
                         sx={{
-                            fontSize: { xs: 24, md: 28 },
+                            fontSize: { xs: '1.2812rem', md: '1.5rem' },
                             fontWeight: 700,
-                            color: '#1f2d27',
+                            color: 'var(--c-text)',
                             letterSpacing: '-0.5px',
                         }}
                     >
@@ -329,9 +329,9 @@ function ContentForm() {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '-4px' }}>
                         <Box
                             sx={{
-                                backgroundColor: '#e6f2ed',
-                                color: '#006b47',
-                                fontSize: 11,
+                                backgroundColor: 'var(--c-primary-soft)',
+                                color: 'var(--c-primary)',
+                                fontSize: '0.6875rem',
                                 fontWeight: 700,
                                 borderRadius: '6px',
                                 padding: '3px 10px',
@@ -339,7 +339,7 @@ function ContentForm() {
                         >
                             {isEdit ? 'Modo edição • conteúdo próprio' : 'Novo envio • conteúdo autoral'}
                         </Box>
-                        <Typography sx={{ fontSize: 12, color: '#6b7280' }}>
+                        <Typography sx={{ fontSize: '0.75rem', color: 'var(--c-text-muted)' }}>
                             {title || 'Sem título'} • {authorName}
                         </Typography>
                     </Box>
@@ -358,8 +358,8 @@ function ContentForm() {
                         {/* COLUNA ESQUERDA: Card Dados do Conteúdo */}
                         <Box
                             sx={{
-                                backgroundColor: '#ffffff',
-                                border: '1px solid #e5e7eb',
+                                backgroundColor: 'var(--c-surface)',
+                                border: '1px solid var(--c-border)',
                                 borderRadius: '14px',
                                 padding: { xs: '20px 16px', md: '26px 28px' },
                                 display: 'flex',
@@ -367,13 +367,13 @@ function ContentForm() {
                                 gap: '18px',
                             }}
                         >
-                            <Typography component="h2" sx={{ fontSize: 16, fontWeight: 700, color: '#1f2d27' }}>
+                            <Typography component="h2" sx={{ fontSize: '1rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                 Dados do conteúdo
                             </Typography>
 
                             {/* Campo: Título */}
                             <Box>
-                                <Typography sx={{ fontSize: 11.5, fontWeight: 700, color: '#1f2d27', marginBottom: '6px' }}>
+                                <Typography sx={{ fontSize: '0.7188rem', fontWeight: 700, color: 'var(--c-text)', marginBottom: '6px' }}>
                                     Título *
                                 </Typography>
                                 <InputBase
@@ -383,12 +383,12 @@ function ContentForm() {
                                     onChange={(e) => setTitle(e.target.value)}
                                     placeholder="Ex: Resumo — Limites e continuidade"
                                     sx={{
-                                        border: '1px solid #d1d5db',
+                                        border: '1px solid var(--c-border-strong)',
                                         borderRadius: '7px',
                                         padding: '7px 12px',
-                                        fontSize: 13,
-                                        color: '#111827',
-                                        backgroundColor: '#ffffff',
+                                        fontSize: '0.8125rem',
+                                        color: 'var(--c-text)',
+                                        backgroundColor: 'var(--c-surface)',
                                     }}
                                 />
                             </Box>
@@ -413,7 +413,7 @@ function ContentForm() {
 
                             {/* Seletor: Tipo de recurso */}
                             <Box>
-                                <Typography sx={{ fontSize: 11.5, fontWeight: 700, color: '#1f2d27', marginBottom: '8px' }}>
+                                <Typography sx={{ fontSize: '0.7188rem', fontWeight: 700, color: 'var(--c-text)', marginBottom: '8px' }}>
                                     Tipo de recurso *
                                 </Typography>
                                 <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -426,15 +426,15 @@ function ContentForm() {
                                                 onClick={() => setResourceType(type.value)}
                                                 sx={{
                                                     textTransform: 'none',
-                                                    fontSize: 12,
+                                                    fontSize: '0.75rem',
                                                     fontWeight: selected ? 700 : 500,
                                                     padding: '6px 16px',
                                                     borderRadius: '7px',
-                                                    border: selected ? '1.5px solid #006b47' : '1px solid #e5e7eb',
-                                                    backgroundColor: selected ? '#e9f4ee' : '#f9fafb',
-                                                    color: selected ? '#006b47' : '#6b7280',
+                                                    border: selected ? '1.5px solid var(--c-primary)' : '1px solid var(--c-border)',
+                                                    backgroundColor: selected ? 'var(--c-primary-soft)' : 'var(--c-surface-alt)',
+                                                    color: selected ? 'var(--c-primary)' : 'var(--c-text-muted)',
                                                     '&:hover': {
-                                                        backgroundColor: selected ? '#dff0e6' : '#f3f4f6',
+                                                        backgroundColor: selected ? 'var(--c-primary-soft-hover)' : 'var(--c-surface-muted)',
                                                     },
                                                 }}
                                             >
@@ -456,9 +456,9 @@ function ContentForm() {
                                     onDrop={handleDrop}
                                     onClick={() => fileInputRef.current?.click()}
                                     sx={{
-                                        border: isDragging ? '1.5px dashed #006b47' : '1.5px dashed #cbd5e1',
+                                        border: isDragging ? '1.5px dashed var(--c-primary)' : '1.5px dashed var(--c-border-strong)',
                                         borderRadius: '12px',
-                                        backgroundColor: isDragging ? '#e9f4ee' : '#f8faf9',
+                                        backgroundColor: isDragging ? 'var(--c-primary-soft)' : 'var(--c-surface-alt)',
                                         padding: '24px 20px',
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -476,12 +476,12 @@ function ContentForm() {
                                         onChange={(e) => handleFileSelect(e.target.files?.[0])}
                                     />
 
-                                    <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: '#006b47' }} />
+                                    <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: 'var(--c-primary)' }} />
 
-                                    <Typography sx={{ fontSize: 13, fontWeight: 700, color: '#1f2d27', marginTop: '4px', textAlign: 'center' }}>
+                                    <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--c-text)', marginTop: '4px', textAlign: 'center' }}>
                                         Arraste o arquivo ou selecione no computador
                                     </Typography>
-                                    <Typography sx={{ fontSize: 11, color: '#6b7280', marginBottom: uploadedFile ? '12px' : 0 }}>
+                                    <Typography sx={{ fontSize: '0.6875rem', color: 'var(--c-text-muted)', marginBottom: uploadedFile ? '12px' : 0 }}>
                                         PDF, DOCX ou imagem • Até 20 MB
                                     </Typography>
 
@@ -490,8 +490,8 @@ function ContentForm() {
                                             onClick={(e) => e.stopPropagation()}
                                             sx={{
                                                 width: '100%',
-                                                backgroundColor: '#ffffff',
-                                                border: '1px solid #e5e7eb',
+                                                backgroundColor: 'var(--c-surface)',
+                                                border: '1px solid var(--c-border)',
                                                 borderRadius: '8px',
                                                 padding: '10px 14px',
                                                 display: 'flex',
@@ -502,12 +502,12 @@ function ContentForm() {
                                             }}
                                         >
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-                                                <DescriptionOutlinedIcon sx={{ color: '#006b47', fontSize: 20, flexShrink: 0 }} />
+                                                <DescriptionOutlinedIcon sx={{ color: 'var(--c-primary)', fontSize: 20, flexShrink: 0 }} />
                                                 <Box sx={{ minWidth: 0 }}>
-                                                    <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: '#1f2d27', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                    <Typography sx={{ fontSize: '0.7812rem', fontWeight: 700, color: 'var(--c-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                         {uploadedFile.name}
                                                     </Typography>
-                                                    <Typography sx={{ fontSize: 10.5, color: '#6b7280' }}>
+                                                    <Typography sx={{ fontSize: '0.6562rem', color: 'var(--c-text-muted)' }}>
                                                         {uploadedFile.size} • Upload concluído
                                                     </Typography>
                                                 </Box>
@@ -517,7 +517,7 @@ function ContentForm() {
                                                 size="small"
                                                 onClick={() => setUploadedFile(null)}
                                                 aria-label="Remover arquivo"
-                                                sx={{ color: '#6b7280' }}
+                                                sx={{ color: 'var(--c-text-muted)' }}
                                             >
                                                 <CloseIcon sx={{ fontSize: 16 }} />
                                             </IconButton>
@@ -530,9 +530,9 @@ function ContentForm() {
                             {resourceType === 'exercicio' && (
                                 <Box
                                     sx={{
-                                        border: '1px solid #e5e7eb',
+                                        border: '1px solid var(--c-border)',
                                         borderRadius: '12px',
-                                        backgroundColor: '#f8faf9',
+                                        backgroundColor: 'var(--c-surface-alt)',
                                         padding: '18px',
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -541,10 +541,10 @@ function ContentForm() {
                                 >
                                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
                                         <Box>
-                                            <Typography sx={{ fontSize: 13.5, fontWeight: 700, color: '#1f2d27' }}>
+                                            <Typography sx={{ fontSize: '0.8438rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                                 Questões para correção automática
                                             </Typography>
-                                            <Typography sx={{ fontSize: 11.5, color: '#6b7280' }}>
+                                            <Typography sx={{ fontSize: '0.7188rem', color: 'var(--c-text-muted)' }}>
                                                 Configure perguntas de múltipla escolha ou de resultado numérico direto.
                                             </Typography>
                                         </Box>
@@ -557,12 +557,12 @@ function ContentForm() {
                                             sx={{
                                                 textTransform: 'none',
                                                 fontWeight: 700,
-                                                fontSize: 12,
-                                                color: '#006b47',
-                                                backgroundColor: '#e9f4ee',
+                                                fontSize: '0.75rem',
+                                                color: 'var(--c-primary)',
+                                                backgroundColor: 'var(--c-primary-soft)',
                                                 borderRadius: '7px',
                                                 padding: '5px 12px',
-                                                '&:hover': { backgroundColor: '#d8ece1' },
+                                                '&:hover': { backgroundColor: 'var(--c-primary-soft-hover)' },
                                             }}
                                         >
                                             Adicionar questão
@@ -573,8 +573,8 @@ function ContentForm() {
                                         <Box
                                             key={q.id}
                                             sx={{
-                                                backgroundColor: '#ffffff',
-                                                border: '1px solid #e5e7eb',
+                                                backgroundColor: 'var(--c-surface)',
+                                                border: '1px solid var(--c-border)',
                                                 borderRadius: '10px',
                                                 padding: '16px',
                                                 display: 'flex',
@@ -583,7 +583,7 @@ function ContentForm() {
                                             }}
                                         >
                                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
-                                                <Typography sx={{ fontSize: 13, fontWeight: 700, color: '#006b47' }}>
+                                                <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--c-primary)' }}>
                                                     Questão {q.number}
                                                 </Typography>
 
@@ -594,12 +594,12 @@ function ContentForm() {
                                                         onClick={() => handleUpdateQuestion(q.id, { type: 'multiple_choice', correctAnswer: 'A' })}
                                                         sx={{
                                                             textTransform: 'none',
-                                                            fontSize: 11,
+                                                            fontSize: '0.6875rem',
                                                             fontWeight: q.type === 'multiple_choice' ? 700 : 500,
                                                             padding: '3px 10px',
                                                             borderRadius: '6px',
-                                                            backgroundColor: q.type === 'multiple_choice' ? '#e9f4ee' : '#f3f4f6',
-                                                            color: q.type === 'multiple_choice' ? '#006b47' : '#6b7280',
+                                                            backgroundColor: q.type === 'multiple_choice' ? 'var(--c-primary-soft)' : 'var(--c-surface-muted)',
+                                                            color: q.type === 'multiple_choice' ? 'var(--c-primary)' : 'var(--c-text-muted)',
                                                         }}
                                                     >
                                                         Múltipla escolha
@@ -610,12 +610,12 @@ function ContentForm() {
                                                         onClick={() => handleUpdateQuestion(q.id, { type: 'direct_result', correctAnswer: '' })}
                                                         sx={{
                                                             textTransform: 'none',
-                                                            fontSize: 11,
+                                                            fontSize: '0.6875rem',
                                                             fontWeight: q.type === 'direct_result' ? 700 : 500,
                                                             padding: '3px 10px',
                                                             borderRadius: '6px',
-                                                            backgroundColor: q.type === 'direct_result' ? '#e9f4ee' : '#f3f4f6',
-                                                            color: q.type === 'direct_result' ? '#006b47' : '#6b7280',
+                                                            backgroundColor: q.type === 'direct_result' ? 'var(--c-primary-soft)' : 'var(--c-surface-muted)',
+                                                            color: q.type === 'direct_result' ? 'var(--c-primary)' : 'var(--c-text-muted)',
                                                         }}
                                                     >
                                                         Resultado direto
@@ -625,7 +625,7 @@ function ContentForm() {
                                                         <IconButton
                                                             size="small"
                                                             onClick={() => handleRemoveQuestion(q.id)}
-                                                            sx={{ color: '#b91c1c' }}
+                                                            sx={{ color: 'var(--c-danger)' }}
                                                         >
                                                             <DeleteOutlinedIcon sx={{ fontSize: 17 }} />
                                                         </IconButton>
@@ -640,10 +640,10 @@ function ContentForm() {
                                                     onChange={(e) => handleUpdateQuestion(q.id, { title: e.target.value })}
                                                     placeholder="Título da questão (ex: Substituição direta)"
                                                     sx={{
-                                                        border: '1px solid #d1d5db',
+                                                        border: '1px solid var(--c-border-strong)',
                                                         borderRadius: '7px',
                                                         padding: '6px 10px',
-                                                        fontSize: 12.5,
+                                                        fontSize: '0.7812rem',
                                                     }}
                                                 />
                                                 <InputBase
@@ -652,10 +652,10 @@ function ContentForm() {
                                                     onChange={(e) => handleUpdateQuestion(q.id, { points: e.target.value })}
                                                     placeholder="Ex: 2,0 pontos"
                                                     sx={{
-                                                        border: '1px solid #d1d5db',
+                                                        border: '1px solid var(--c-border-strong)',
                                                         borderRadius: '7px',
                                                         padding: '6px 10px',
-                                                        fontSize: 12.5,
+                                                        fontSize: '0.7812rem',
                                                     }}
                                                 />
                                             </Box>
@@ -666,16 +666,16 @@ function ContentForm() {
                                                 onChange={(e) => handleUpdateQuestion(q.id, { statement: e.target.value })}
                                                 placeholder="Enunciado da pergunta (ex: Qual é o valor de lim x → 2 de 3x² - 2x + 1?)"
                                                 sx={{
-                                                    border: '1px solid #d1d5db',
+                                                    border: '1px solid var(--c-border-strong)',
                                                     borderRadius: '7px',
                                                     padding: '6px 10px',
-                                                    fontSize: 12.5,
+                                                    fontSize: '0.7812rem',
                                                 }}
                                             />
 
                                             {q.type === 'multiple_choice' ? (
                                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                    <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#4b5563' }}>
+                                                    <Typography sx={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--c-text-secondary)' }}>
                                                         Alternativas (clique no círculo para marcar a correta):
                                                     </Typography>
                                                     {q.options.map((opt) => {
@@ -687,8 +687,8 @@ function ContentForm() {
                                                                     display: 'flex',
                                                                     alignItems: 'center',
                                                                     gap: '8px',
-                                                                    border: isCorrect ? '1.5px solid #006b47' : '1px solid #e5e7eb',
-                                                                    backgroundColor: isCorrect ? '#e9f4ee' : '#ffffff',
+                                                                    border: isCorrect ? '1.5px solid var(--c-primary)' : '1px solid var(--c-border)',
+                                                                    backgroundColor: isCorrect ? 'var(--c-primary-soft)' : 'var(--c-surface)',
                                                                     borderRadius: '7px',
                                                                     padding: '4px 10px',
                                                                 }}
@@ -696,7 +696,7 @@ function ContentForm() {
                                                                 <IconButton
                                                                     size="small"
                                                                     onClick={() => handleUpdateQuestion(q.id, { correctAnswer: opt.id })}
-                                                                    sx={{ padding: '2px', color: isCorrect ? '#006b47' : '#9ca3af' }}
+                                                                    sx={{ padding: '2px', color: isCorrect ? 'var(--c-primary)' : 'var(--c-text-subtle)' }}
                                                                 >
                                                                     {isCorrect ? (
                                                                         <RadioButtonCheckedIcon sx={{ fontSize: 17 }} />
@@ -709,10 +709,10 @@ function ContentForm() {
                                                                     value={opt.label}
                                                                     onChange={(e) => handleUpdateOptionLabel(q.id, opt.id, e.target.value)}
                                                                     placeholder={`Alternativa ${opt.id}`}
-                                                                    sx={{ fontSize: 12.5 }}
+                                                                    sx={{ fontSize: '0.7812rem' }}
                                                                 />
                                                                 {isCorrect && (
-                                                                    <Typography sx={{ fontSize: 10.5, fontWeight: 700, color: '#006b47', whiteSpace: 'nowrap' }}>
+                                                                    <Typography sx={{ fontSize: '0.6562rem', fontWeight: 700, color: 'var(--c-primary)', whiteSpace: 'nowrap' }}>
                                                                         Gabarito ✓
                                                                     </Typography>
                                                                 )}
@@ -722,7 +722,7 @@ function ContentForm() {
                                                 </Box>
                                             ) : (
                                                 <Box>
-                                                    <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#006b47', marginBottom: '4px' }}>
+                                                    <Typography sx={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--c-primary)', marginBottom: '4px' }}>
                                                         Resultado exato esperado (Gabarito numérico):
                                                     </Typography>
                                                     <InputBase
@@ -735,11 +735,11 @@ function ContentForm() {
                                                         }
                                                         placeholder="Ex: 6"
                                                         sx={{
-                                                            border: '1.5px solid #006b47',
-                                                            backgroundColor: '#e9f4ee',
+                                                            border: '1.5px solid var(--c-primary)',
+                                                            backgroundColor: 'var(--c-primary-soft)',
                                                             borderRadius: '7px',
                                                             padding: '6px 10px',
-                                                            fontSize: 12.5,
+                                                            fontSize: '0.7812rem',
                                                             fontWeight: 600,
                                                         }}
                                                     />
@@ -754,9 +754,9 @@ function ContentForm() {
                             {resourceType === 'link' && (
                                 <Box
                                     sx={{
-                                        border: '1px solid #e5e7eb',
+                                        border: '1px solid var(--c-border)',
                                         borderRadius: '12px',
-                                        backgroundColor: '#f8faf9',
+                                        backgroundColor: 'var(--c-surface-alt)',
                                         padding: '18px',
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -765,10 +765,10 @@ function ContentForm() {
                                 >
                                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
                                         <Box>
-                                            <Typography sx={{ fontSize: 13.5, fontWeight: 700, color: '#1f2d27' }}>
+                                            <Typography sx={{ fontSize: '0.8438rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                                 Links de estudo (vídeos, sites e simuladores)
                                             </Typography>
-                                            <Typography sx={{ fontSize: 11.5, color: '#6b7280' }}>
+                                            <Typography sx={{ fontSize: '0.7188rem', color: 'var(--c-text-muted)' }}>
                                                 Adicione um ou mais links com títulos e descrições para compor a página do material.
                                             </Typography>
                                         </Box>
@@ -781,12 +781,12 @@ function ContentForm() {
                                             sx={{
                                                 textTransform: 'none',
                                                 fontWeight: 700,
-                                                fontSize: 12,
-                                                color: '#006b47',
-                                                backgroundColor: '#e9f4ee',
+                                                fontSize: '0.75rem',
+                                                color: 'var(--c-primary)',
+                                                backgroundColor: 'var(--c-primary-soft)',
                                                 borderRadius: '7px',
                                                 padding: '5px 12px',
-                                                '&:hover': { backgroundColor: '#d8ece1' },
+                                                '&:hover': { backgroundColor: 'var(--c-primary-soft-hover)' },
                                             }}
                                         >
                                             Adicionar link
@@ -797,8 +797,8 @@ function ContentForm() {
                                         <Box
                                             key={item.id}
                                             sx={{
-                                                backgroundColor: '#ffffff',
-                                                border: '1px solid #e5e7eb',
+                                                backgroundColor: 'var(--c-surface)',
+                                                border: '1px solid var(--c-border)',
                                                 borderRadius: '10px',
                                                 padding: '16px',
                                                 display: 'flex',
@@ -807,7 +807,7 @@ function ContentForm() {
                                             }}
                                         >
                                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                                                <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: '#006b47' }}>
+                                                <Typography sx={{ fontSize: '0.7812rem', fontWeight: 700, color: 'var(--c-primary)' }}>
                                                     Link #{idx + 1}
                                                 </Typography>
 
@@ -824,13 +824,13 @@ function ContentForm() {
                                                             onClick={() => handleUpdateLink(item.id, { kind: k.value })}
                                                             sx={{
                                                                 textTransform: 'none',
-                                                                fontSize: 11,
+                                                                fontSize: '0.6875rem',
                                                                 fontWeight: item.kind === k.value ? 700 : 500,
                                                                 padding: '2px 8px',
                                                                 minWidth: 0,
                                                                 borderRadius: '5px',
-                                                                backgroundColor: item.kind === k.value ? '#e9f4ee' : '#f3f4f6',
-                                                                color: item.kind === k.value ? '#006b47' : '#6b7280',
+                                                                backgroundColor: item.kind === k.value ? 'var(--c-primary-soft)' : 'var(--c-surface-muted)',
+                                                                color: item.kind === k.value ? 'var(--c-primary)' : 'var(--c-text-muted)',
                                                             }}
                                                         >
                                                             {k.label}
@@ -841,7 +841,7 @@ function ContentForm() {
                                                         <IconButton
                                                             size="small"
                                                             onClick={() => handleRemoveLink(item.id)}
-                                                            sx={{ color: '#b91c1c' }}
+                                                            sx={{ color: 'var(--c-danger)' }}
                                                         >
                                                             <DeleteOutlinedIcon sx={{ fontSize: 17 }} />
                                                         </IconButton>
@@ -856,10 +856,10 @@ function ContentForm() {
                                                     onChange={(e) => handleUpdateLink(item.id, { title: e.target.value })}
                                                     placeholder="Título do link (ex: Explicação visual de limites)"
                                                     sx={{
-                                                        border: '1px solid #d1d5db',
+                                                        border: '1px solid var(--c-border-strong)',
                                                         borderRadius: '7px',
                                                         padding: '6px 10px',
-                                                        fontSize: 12.5,
+                                                        fontSize: '0.7812rem',
                                                     }}
                                                 />
                                                 <InputBase
@@ -868,10 +868,10 @@ function ContentForm() {
                                                     onChange={(e) => handleUpdateLink(item.id, { url: e.target.value })}
                                                     placeholder="URL (ex: https://www.youtube.com/watch?v=...)"
                                                     sx={{
-                                                        border: '1px solid #d1d5db',
+                                                        border: '1px solid var(--c-border-strong)',
                                                         borderRadius: '7px',
                                                         padding: '6px 10px',
-                                                        fontSize: 12.5,
+                                                        fontSize: '0.7812rem',
                                                     }}
                                                 />
                                             </Box>
@@ -884,10 +884,10 @@ function ContentForm() {
                                                 onChange={(e) => handleUpdateLink(item.id, { description: e.target.value })}
                                                 placeholder="Descrição do que estudar neste link..."
                                                 sx={{
-                                                    border: '1px solid #d1d5db',
+                                                    border: '1px solid var(--c-border-strong)',
                                                     borderRadius: '7px',
                                                     padding: '6px 10px',
-                                                    fontSize: 12.5,
+                                                    fontSize: '0.7812rem',
                                                 }}
                                             />
                                         </Box>
@@ -897,7 +897,7 @@ function ContentForm() {
 
                             {/* Campo: Descrição Geral */}
                             <Box>
-                                <Typography sx={{ fontSize: 11.5, fontWeight: 700, color: '#1f2d27', marginBottom: '6px' }}>
+                                <Typography sx={{ fontSize: '0.7188rem', fontWeight: 700, color: 'var(--c-text)', marginBottom: '6px' }}>
                                     Descrição *
                                 </Typography>
                                 <InputBase
@@ -908,12 +908,12 @@ function ContentForm() {
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Descreva o conteúdo, tópicos abordados e orientações de estudo..."
                                     sx={{
-                                        border: '1px solid #d1d5db',
+                                        border: '1px solid var(--c-border-strong)',
                                         borderRadius: '7px',
                                         padding: '8px 12px',
-                                        fontSize: 12.5,
-                                        color: '#111827',
-                                        backgroundColor: '#ffffff',
+                                        fontSize: '0.7812rem',
+                                        color: 'var(--c-text)',
+                                        backgroundColor: 'var(--c-surface)',
                                         alignItems: 'flex-start',
                                     }}
                                 />
@@ -922,7 +922,7 @@ function ContentForm() {
                             {/* Linha dupla: URL de apoio + Citação / fonte */}
                             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '16px' }}>
                                 <Box>
-                                    <Typography sx={{ fontSize: 11.5, fontWeight: 700, color: '#1f2d27', marginBottom: '6px' }}>
+                                    <Typography sx={{ fontSize: '0.7188rem', fontWeight: 700, color: 'var(--c-text)', marginBottom: '6px' }}>
                                         URL de apoio (opcional)
                                     </Typography>
                                     <InputBase
@@ -931,18 +931,18 @@ function ContentForm() {
                                         onChange={(e) => setSupportUrl(e.target.value)}
                                         placeholder="https://www.geogebra.org/graphing"
                                         sx={{
-                                            border: '1px solid #d1d5db',
+                                            border: '1px solid var(--c-border-strong)',
                                             borderRadius: '7px',
                                             padding: '7px 12px',
-                                            fontSize: 12.5,
-                                            color: '#111827',
-                                            backgroundColor: '#ffffff',
+                                            fontSize: '0.7812rem',
+                                            color: 'var(--c-text)',
+                                            backgroundColor: 'var(--c-surface)',
                                         }}
                                     />
                                 </Box>
 
                                 <Box>
-                                    <Typography sx={{ fontSize: 11.5, fontWeight: 700, color: '#1f2d27', marginBottom: '6px' }}>
+                                    <Typography sx={{ fontSize: '0.7188rem', fontWeight: 700, color: 'var(--c-text)', marginBottom: '6px' }}>
                                         Citação / fonte (quando aplicável)
                                     </Typography>
                                     <InputBase
@@ -951,12 +951,12 @@ function ContentForm() {
                                         onChange={(e) => setCitation(e.target.value)}
                                         placeholder={`Material autoral de ${authorName}`}
                                         sx={{
-                                            border: '1px solid #d1d5db',
+                                            border: '1px solid var(--c-border-strong)',
                                             borderRadius: '7px',
                                             padding: '7px 12px',
-                                            fontSize: 12.5,
-                                            color: '#111827',
-                                            backgroundColor: '#ffffff',
+                                            fontSize: '0.7812rem',
+                                            color: 'var(--c-text)',
+                                            backgroundColor: 'var(--c-surface)',
                                         }}
                                     />
                                 </Box>
@@ -971,10 +971,10 @@ function ContentForm() {
                                     sx={{
                                         textTransform: 'none',
                                         fontWeight: 600,
-                                        fontSize: 12.5,
-                                        color: '#1f2d27',
-                                        borderColor: '#e5e7eb',
-                                        backgroundColor: '#ffffff',
+                                        fontSize: '0.7812rem',
+                                        color: 'var(--c-text)',
+                                        borderColor: 'var(--c-border)',
+                                        backgroundColor: 'var(--c-surface)',
                                         borderRadius: '7px',
                                         padding: '7px 18px',
                                     }}
@@ -986,7 +986,7 @@ function ContentForm() {
                                     type="submit"
                                     fullWidth={false}
                                     startIcon={<SendOutlinedIcon sx={{ fontSize: 16 }} />}
-                                    sx={{ height: '38px', fontSize: 12.5 }}
+                                    sx={{ height: '38px', fontSize: '0.7812rem' }}
                                 >
                                     {isProfessor ? 'Publicar conteúdo' : 'Enviar para aprovação'}
                                 </PrimaryButton>
@@ -1000,20 +1000,20 @@ function ContentForm() {
                                     display: 'flex',
                                     alignItems: 'flex-start',
                                     gap: '10px',
-                                    backgroundColor: '#e9f4ee',
-                                    border: '1px solid #cfe5dc',
+                                    backgroundColor: 'var(--c-primary-soft)',
+                                    border: '1px solid var(--c-primary-border)',
                                     borderRadius: '12px',
                                     padding: '16px 18px',
                                 }}
                             >
-                                <CheckCircleOutlinedIcon sx={{ color: '#006b47', fontSize: 20, marginTop: '1px', flexShrink: 0 }} />
+                                <CheckCircleOutlinedIcon sx={{ color: 'var(--c-primary)', fontSize: 20, marginTop: '1px', flexShrink: 0 }} />
                                 <Box>
-                                    <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: '#006b47' }}>
+                                    <Typography sx={{ fontSize: '0.7812rem', fontWeight: 700, color: 'var(--c-primary)' }}>
                                         {isProfessor
                                             ? 'Publicação imediata habilitada'
                                             : 'Pedido encaminhado ao administrador'}
                                     </Typography>
-                                    <Typography sx={{ fontSize: 11.5, color: '#006b47', marginTop: '4px', lineHeight: 1.45 }}>
+                                    <Typography sx={{ fontSize: '0.7188rem', color: 'var(--c-primary)', marginTop: '4px', lineHeight: 1.45 }}>
                                         {isProfessor
                                             ? 'Com perfil Professor, seu material é publicado diretamente no acervo sem fila de espera.'
                                             : `${statusBanner.code} • Enviado em ${statusBanner.submittedAt}. Seu conteúdo foi recebido e aguarda aprovação.`}

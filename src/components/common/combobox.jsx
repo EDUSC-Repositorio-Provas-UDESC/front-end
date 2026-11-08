@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormControl, FormLabel, Select, MenuItem } from '@mui/material';
 
 export default function Combobox({
@@ -12,11 +11,11 @@ export default function Combobox({
         <FormControl fullWidth>
             <FormLabel
                 sx={{
-                    fontSize: '12px',
+                    fontSize: '0.75rem',
                     fontWeight: 600,
-                    color: '#1f2937',
+                    color: 'var(--c-text)',
                     marginBottom: '2px',
-                    '&.Mui-focused': { color: '#1f2937' },
+                    '&.Mui-focused': { color: 'var(--c-text)' },
                 }}
             >
                 {label}
@@ -30,14 +29,14 @@ export default function Combobox({
                 size="small"
                 sx={{
                     borderRadius: '7px',
-                    backgroundColor: '#ffffff',
-                    '& fieldset': { borderColor: '#d1d5db' },
-                    '&:hover fieldset': { borderColor: '#9ca3af' },
-                    '&.Mui-focused fieldset': { borderColor: '#006b47', borderWidth: '1.5px' },
+                    backgroundColor: 'var(--c-surface)',
+                    '& fieldset': { borderColor: 'var(--c-border-strong)' },
+                    '&:hover fieldset': { borderColor: 'var(--c-text-subtle)' },
+                    '&.Mui-focused fieldset': { borderColor: 'var(--c-primary)', borderWidth: '1.5px' },
                     '& .MuiSelect-select': {
                         padding: '7px 12px',
-                        fontSize: '13.5px',
-                        color: '#111827',
+                        fontSize: '0.8438rem',
+                        color: 'var(--c-text)',
                     },
                 }}
             >

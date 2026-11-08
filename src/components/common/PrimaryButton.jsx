@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, CircularProgress } from '@mui/material';
 
 export default function PrimaryButton({
@@ -19,23 +18,23 @@ export default function PrimaryButton({
             startIcon={!loading ? startIcon : null}
             endIcon={!loading ? endIcon : null}
             sx={{
-                backgroundColor: '#006b47',
-                color: '#ffffff',
+                backgroundColor: 'var(--c-brand)',
+                color: 'var(--c-on-brand)',
                 borderRadius: '7px',
                 padding: '9px 18px',
-                fontSize: '14px',
+                fontSize: '0.875rem',
                 fontWeight: 600,
                 textTransform: 'none',
                 boxShadow: 'none',
                 marginTop: 'clamp(12px, 2vh, 18px)',
                 height: '40px',
                 '&:hover': {
-                    backgroundColor: '#005236',
+                    backgroundColor: 'var(--c-brand-hover)',
                     boxShadow: 'none',
                 },
                 '&.Mui-disabled': {
-                    backgroundColor: '#80b5a3',
-                    color: '#ffffff',
+                    backgroundColor: 'var(--c-brand-disabled)',
+                    color: 'var(--c-on-brand)',
                 },
                 ...sx,
             }}

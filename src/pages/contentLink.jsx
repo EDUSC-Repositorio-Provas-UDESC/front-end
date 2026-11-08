@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Button, Link } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PlayCircleOutlinedIcon from '@mui/icons-material/PlayCircleOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -15,20 +15,20 @@ import subjectService from '../services/subjectService';
 const KIND_CONFIG = {
     video: {
         icon: PlayCircleOutlinedIcon,
-        badgeBg: '#e9f4ee',
-        badgeColor: '#006b47',
+        badgeBg: 'var(--c-primary-soft)',
+        badgeColor: 'var(--c-primary)',
         actionLabel: 'Assistir vídeo',
     },
     simulador: {
         icon: ScienceOutlinedIcon,
-        badgeBg: '#eef2ff',
-        badgeColor: '#3730a3',
+        badgeBg: 'var(--c-info-soft)',
+        badgeColor: 'var(--c-info)',
         actionLabel: 'Abrir simulador',
     },
     site: {
         icon: LanguageIcon,
-        badgeBg: '#f3f4f6',
-        badgeColor: '#374151',
+        badgeBg: 'var(--c-surface-muted)',
+        badgeColor: 'var(--c-text-secondary)',
         actionLabel: 'Acessar site',
     },
 };
@@ -65,7 +65,7 @@ function ContentLink() {
     ];
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#f4f6f5' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--c-bg)' }}>
             <SideBar defaultActive="explorar" />
 
             <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, minHeight: 0 }}>
@@ -91,16 +91,16 @@ function ContentLink() {
                             <Typography
                                 component="h1"
                                 sx={{
-                                    fontSize: { xs: 22, md: 28 },
+                                    fontSize: { xs: '1.1875rem', md: '1.5rem' },
                                     fontWeight: 700,
-                                    color: '#1f2d27',
+                                    color: 'var(--c-text)',
                                     letterSpacing: '-0.5px',
                                     lineHeight: 1.25,
                                 }}
                             >
                                 {resource?.title}
                             </Typography>
-                            <Typography sx={{ fontSize: 13, color: '#6b7280', marginTop: '6px' }}>
+                            <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-muted)', marginTop: '6px' }}>
                                 {resource?.description}
                             </Typography>
                         </Box>
@@ -109,12 +109,12 @@ function ContentLink() {
                     {/* Chips / Metadados */}
                     <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                         {resource?.typeLabel && (
-                            <Box sx={{ backgroundColor: '#e9f4ee', color: '#006b47', fontSize: 11.5, fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
+                            <Box sx={{ backgroundColor: 'var(--c-primary-soft)', color: 'var(--c-primary)', fontSize: '0.7188rem', fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
                                 {resource.typeLabel}
                             </Box>
                         )}
                         {resource?.info && (
-                            <Box sx={{ backgroundColor: '#f3f4f6', color: '#4b5563', fontSize: 11.5, fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
+                            <Box sx={{ backgroundColor: 'var(--c-surface-muted)', color: 'var(--c-text-secondary)', fontSize: '0.7188rem', fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
                                 {resource.info}
                             </Box>
                         )}
@@ -132,8 +132,8 @@ function ContentLink() {
                         {/* COLUNA ESQUERDA: Card de Links, Vídeos e Sites para Estudo */}
                         <Box
                             sx={{
-                                backgroundColor: '#ffffff',
-                                border: '1px solid #e5e7eb',
+                                backgroundColor: 'var(--c-surface)',
+                                border: '1px solid var(--c-border)',
                                 borderRadius: '12px',
                                 overflow: 'hidden',
                                 display: 'flex',
@@ -147,15 +147,15 @@ function ContentLink() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    borderBottom: '1px solid #e5e7eb',
-                                    backgroundColor: '#ffffff',
+                                    borderBottom: '1px solid var(--c-border)',
+                                    backgroundColor: 'var(--c-surface)',
                                     flexWrap: 'wrap',
                                     gap: '10px',
                                 }}
                             >
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <InsertLinkOutlinedIcon sx={{ fontSize: 18, color: '#006b47' }} />
-                                    <Typography sx={{ fontSize: 13, fontWeight: 600, color: '#1f2d27' }}>
+                                    <InsertLinkOutlinedIcon sx={{ fontSize: 18, color: 'var(--c-primary)' }} />
+                                    <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--c-text)' }}>
                                         Materiais externos selecionados para estudo
                                     </Typography>
                                 </Box>
@@ -179,12 +179,12 @@ function ContentLink() {
                                                     gap: '16px',
                                                     padding: '16px',
                                                     borderRadius: '10px',
-                                                    border: '1px solid #e5e7eb',
-                                                    backgroundColor: '#ffffff',
+                                                    border: '1px solid var(--c-border)',
+                                                    backgroundColor: 'var(--c-surface)',
                                                     transition: 'border-color 0.15s ease, background-color 0.15s ease',
                                                     '&:hover': {
-                                                        borderColor: '#006b47',
-                                                        backgroundColor: '#fafdfb',
+                                                        borderColor: 'var(--c-primary)',
+                                                        backgroundColor: 'var(--c-surface-alt)',
                                                     },
                                                 }}
                                             >
@@ -211,7 +211,7 @@ function ContentLink() {
                                                                 sx={{
                                                                     backgroundColor: cfg.badgeBg,
                                                                     color: cfg.badgeColor,
-                                                                    fontSize: 10.5,
+                                                                    fontSize: '0.6562rem',
                                                                     fontWeight: 700,
                                                                     borderRadius: '4px',
                                                                     padding: '2px 7px',
@@ -219,16 +219,16 @@ function ContentLink() {
                                                             >
                                                                 {item.kindLabel}
                                                             </Box>
-                                                            <Typography sx={{ fontSize: 11, color: '#6b7280' }}>
+                                                            <Typography sx={{ fontSize: '0.6875rem', color: 'var(--c-text-muted)' }}>
                                                                 {item.source} • {item.duration}
                                                             </Typography>
                                                         </Box>
 
-                                                        <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#1f2d27', lineHeight: 1.35 }}>
+                                                        <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--c-text)', lineHeight: 1.35 }}>
                                                             {item.title}
                                                         </Typography>
 
-                                                        <Typography sx={{ fontSize: 12, color: '#4b5563', marginTop: '4px', lineHeight: 1.45 }}>
+                                                        <Typography sx={{ fontSize: '0.75rem', color: 'var(--c-text-secondary)', marginTop: '4px', lineHeight: 1.45 }}>
                                                             {item.description}
                                                         </Typography>
                                                     </Box>
@@ -244,17 +244,17 @@ function ContentLink() {
                                                     sx={{
                                                         textTransform: 'none',
                                                         fontWeight: 600,
-                                                        fontSize: 12,
-                                                        color: '#006b47',
-                                                        borderColor: '#cfe5dc',
-                                                        backgroundColor: '#f4f9f6',
+                                                        fontSize: '0.75rem',
+                                                        color: 'var(--c-primary)',
+                                                        borderColor: 'var(--c-primary-border)',
+                                                        backgroundColor: 'var(--c-surface-alt)',
                                                         borderRadius: '7px',
                                                         padding: '6px 12px',
                                                         whiteSpace: 'nowrap',
                                                         flexShrink: 0,
                                                         '&:hover': {
-                                                            backgroundColor: '#e9f4ee',
-                                                            borderColor: '#006b47',
+                                                            backgroundColor: 'var(--c-primary-soft)',
+                                                            borderColor: 'var(--c-primary)',
                                                         },
                                                     }}
                                                 >

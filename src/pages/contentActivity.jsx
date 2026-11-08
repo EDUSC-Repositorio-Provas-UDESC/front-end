@@ -67,7 +67,7 @@ function ContentActivity() {
     ];
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#f4f6f5' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--c-bg)' }}>
             <SideBar defaultActive="atividades" />
 
             <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, minHeight: 0 }}>
@@ -93,16 +93,16 @@ function ContentActivity() {
                             <Typography
                                 component="h1"
                                 sx={{
-                                    fontSize: { xs: 22, md: 28 },
+                                    fontSize: { xs: '1.1875rem', md: '1.5rem' },
                                     fontWeight: 700,
-                                    color: '#1f2d27',
+                                    color: 'var(--c-text)',
                                     letterSpacing: '-0.5px',
                                     lineHeight: 1.25,
                                 }}
                             >
                                 {activity?.title}
                             </Typography>
-                            <Typography sx={{ fontSize: 13, color: '#6b7280', marginTop: '6px' }}>
+                            <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-muted)', marginTop: '6px' }}>
                                 {activity?.description}
                             </Typography>
                         </Box>
@@ -116,15 +116,15 @@ function ContentActivity() {
                                 sx={{
                                     textTransform: 'none',
                                     fontWeight: 600,
-                                    fontSize: 12.5,
-                                    color: '#1f2d27',
-                                    borderColor: '#e5e7eb',
-                                    backgroundColor: '#ffffff',
+                                    fontSize: '0.7812rem',
+                                    color: 'var(--c-text)',
+                                    borderColor: 'var(--c-border)',
+                                    backgroundColor: 'var(--c-surface)',
                                     borderRadius: '7px',
                                     height: '36px',
                                     '&:hover': {
-                                        borderColor: '#006b47',
-                                        backgroundColor: '#f4f9f6',
+                                        borderColor: 'var(--c-primary)',
+                                        backgroundColor: 'var(--c-surface-alt)',
                                     },
                                 }}
                             >
@@ -153,8 +153,8 @@ function ContentActivity() {
                                     <Box
                                         key={q.id}
                                         sx={{
-                                            backgroundColor: '#ffffff',
-                                            border: '1px solid #e5e7eb',
+                                            backgroundColor: 'var(--c-surface)',
+                                            border: '1px solid var(--c-border)',
                                             borderRadius: '12px',
                                             padding: { xs: '18px 16px', md: '22px 24px' },
                                             display: 'flex',
@@ -164,14 +164,14 @@ function ContentActivity() {
                                     >
                                         {/* Cabeçalho da Questão */}
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                                            <Typography sx={{ fontSize: 14.5, fontWeight: 700, color: '#1f2d27' }}>
+                                            <Typography sx={{ fontSize: '0.9062rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                                 {q.number}. {q.title}
                                             </Typography>
                                             <Box
                                                 sx={{
-                                                    backgroundColor: '#f3f4f6',
-                                                    color: '#4b5563',
-                                                    fontSize: 11,
+                                                    backgroundColor: 'var(--c-surface-muted)',
+                                                    color: 'var(--c-text-secondary)',
+                                                    fontSize: '0.6875rem',
                                                     fontWeight: 600,
                                                     borderRadius: '6px',
                                                     padding: '4px 10px',
@@ -183,7 +183,7 @@ function ContentActivity() {
                                         </Box>
 
                                         {/* Enunciado */}
-                                        <Typography sx={{ fontSize: 13, color: '#374151', lineHeight: 1.5 }}>
+                                        <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-secondary)', lineHeight: 1.5 }}>
                                             {q.statement}
                                         </Typography>
 
@@ -196,17 +196,17 @@ function ContentActivity() {
 
                                                     const borderColor = isSelected
                                                         ? isCorrect
-                                                            ? '#006b47'
-                                                            : '#dc2626'
-                                                        : '#e5e7eb';
+                                                            ? 'var(--c-primary)'
+                                                            : 'var(--c-danger)'
+                                                        : 'var(--c-border)';
 
                                                     const bgColor = isSelected
                                                         ? isCorrect
-                                                            ? '#e9f4ee'
-                                                            : '#fef2f2'
-                                                        : '#ffffff';
+                                                            ? 'var(--c-primary-soft)'
+                                                            : 'var(--c-danger-soft)'
+                                                        : 'var(--c-surface)';
 
-                                                    const statusColor = isCorrect ? '#006b47' : '#dc2626';
+                                                    const statusColor = isCorrect ? 'var(--c-primary)' : 'var(--c-danger)';
 
                                                     return (
                                                         <Box
@@ -219,12 +219,12 @@ function ContentActivity() {
                                                                 gap: '12px',
                                                                 padding: '11px 14px',
                                                                 borderRadius: '8px',
-                                                                border: isSelected ? `1.5px solid ${borderColor}` : '1px solid #e5e7eb',
+                                                                border: isSelected ? `1.5px solid ${borderColor}` : '1px solid var(--c-border)',
                                                                 backgroundColor: bgColor,
                                                                 cursor: 'pointer',
                                                                 transition: 'border-color 0.15s ease, background-color 0.15s ease',
                                                                 '&:hover': {
-                                                                    borderColor: isSelected ? borderColor : '#006b47',
+                                                                    borderColor: isSelected ? borderColor : 'var(--c-primary)',
                                                                 },
                                                             }}
                                                         >
@@ -232,13 +232,13 @@ function ContentActivity() {
                                                                 {isSelected ? (
                                                                     <RadioButtonCheckedIcon sx={{ fontSize: 18, color: statusColor }} />
                                                                 ) : (
-                                                                    <RadioButtonUncheckedIcon sx={{ fontSize: 18, color: '#9ca3af' }} />
+                                                                    <RadioButtonUncheckedIcon sx={{ fontSize: 18, color: 'var(--c-text-subtle)' }} />
                                                                 )}
                                                                 <Typography
                                                                     sx={{
-                                                                        fontSize: 12.5,
+                                                                        fontSize: '0.7812rem',
                                                                         fontWeight: isSelected ? 600 : 400,
-                                                                        color: '#1f2d27',
+                                                                        color: 'var(--c-text)',
                                                                     }}
                                                                 >
                                                                     {opt.label}
@@ -246,7 +246,7 @@ function ContentActivity() {
                                                             </Box>
 
                                                             {isSelected && (
-                                                                <Typography sx={{ fontSize: 11.5, fontWeight: 700, color: statusColor, flexShrink: 0 }}>
+                                                                <Typography sx={{ fontSize: '0.7188rem', fontWeight: 700, color: statusColor, flexShrink: 0 }}>
                                                                     {isCorrect ? 'Correta ✓' : 'Incorreta ✕'}
                                                                 </Typography>
                                                             )}
@@ -259,7 +259,7 @@ function ContentActivity() {
                                         {/* Tipo 2: Resultado Direto com Validação em Tempo Real */}
                                         {q.type === 'direct_result' && (
                                             <Box sx={{ marginTop: '2px' }}>
-                                                <Typography sx={{ fontSize: 11.5, fontWeight: 700, color: '#1f2d27', marginBottom: '8px' }}>
+                                                <Typography sx={{ fontSize: '0.7188rem', fontWeight: 700, color: 'var(--c-text)', marginBottom: '8px' }}>
                                                     Resultado direto (apenas valor numérico)
                                                 </Typography>
                                                 <InputBase
@@ -272,9 +272,9 @@ function ContentActivity() {
                                                         hasDirectInput ? (
                                                             <Typography
                                                                 sx={{
-                                                                    fontSize: 11.5,
+                                                                    fontSize: '0.7188rem',
                                                                     fontWeight: 700,
-                                                                    color: isDirectCorrect ? '#006b47' : '#dc2626',
+                                                                    color: isDirectCorrect ? 'var(--c-primary)' : 'var(--c-danger)',
                                                                     whiteSpace: 'nowrap',
                                                                     marginLeft: '10px',
                                                                 }}
@@ -285,17 +285,17 @@ function ContentActivity() {
                                                     }
                                                     sx={{
                                                         border: hasDirectInput
-                                                            ? `1.5px solid ${isDirectCorrect ? '#006b47' : '#dc2626'}`
-                                                            : '1px solid #e5e7eb',
+                                                            ? `1.5px solid ${isDirectCorrect ? 'var(--c-primary)' : 'var(--c-danger)'}`
+                                                            : '1px solid var(--c-border)',
                                                         borderRadius: '8px',
                                                         padding: '10px 14px',
-                                                        fontSize: 13,
-                                                        color: '#1f2d27',
+                                                        fontSize: '0.8125rem',
+                                                        color: 'var(--c-text)',
                                                         backgroundColor: hasDirectInput
                                                             ? isDirectCorrect
-                                                                ? '#e9f4ee'
-                                                                : '#fef2f2'
-                                                            : '#ffffff',
+                                                                ? 'var(--c-primary-soft)'
+                                                                : 'var(--c-danger-soft)'
+                                                            : 'var(--c-surface)',
                                                         transition: 'border-color 0.15s ease, background-color 0.15s ease',
                                                     }}
                                                 />

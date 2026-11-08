@@ -1,52 +1,121 @@
+/* ==========================================================================
+   UDESC Estuda — Paleta universal (modo claro / escuro) e escala de fonte
+   --------------------------------------------------------------------------
+   Use SEMPRE as variáveis abaixo em vez de cores fixas (hex), tanto no CSS
+   quanto no `sx` do MUI. Ex.: sx={{ color: 'var(--c-text)' }}.
+   O tema ativo é definido em <html data-theme="light|dark"> e o tamanho de
+   fonte em <html data-font-size="small|medium|large"> (PreferencesProvider).
+   ========================================================================== */
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* Superfícies */
+  --c-bg: #f4f6f5;               /* fundo da página */
+  --c-surface: #ffffff;          /* cards, inputs, painéis */
+  --c-surface-alt: #f8faf9;      /* hover sutil, áreas secundárias */
+  --c-surface-muted: #f0f3f1;    /* preenchimentos neutros, chips */
+  --c-sidebar: #f9fbfa;
+  --c-table-head: #eef4f0;
+
+  /* Bordas */
+  --c-border: #e5e7eb;
+  --c-border-strong: #d1d5db;
+
+  /* Texto */
+  --c-text: #1f2d27;             /* títulos e texto principal */
+  --c-text-secondary: #374151;
+  --c-text-muted: #6b7280;
+  --c-text-subtle: #9ca3af;
+
+  /* Marca — fundos sólidos (botões, painéis verdes). Texto sobre ela: --c-on-brand */
+  --c-brand: #006b47;
+  --c-brand-hover: #005236;
+  --c-brand-disabled: #80b5a3;
+  --c-on-brand: #ffffff;
+
+  /* Primária — texto, ícones e bordas de destaque */
+  --c-primary: #006b47;
+  --c-primary-strong: #005c3b;
+  --c-primary-soft: #e8f3ed;
+  --c-primary-soft-hover: #dff0e6;
+  --c-primary-border: #cfe2d8;
+  --c-focus-ring: rgba(0, 107, 71, 0.12);
+
+  /* Estados */
+  --c-danger: #c62828;
+  --c-danger-soft: #fdecec;
+  --c-warning: #8a5a00;
+  --c-warning-soft: #fdf1dc;
+  --c-info: #2f4f8a;
+  --c-info-soft: #eaf0fa;
+  --c-highlight: #d5eaa3;         /* destaque claro sobre fundos --c-brand */
+
+  --c-shadow: rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --c-bg: #0f1412;
+  --c-surface: #171d1a;
+  --c-surface-alt: #1c2420;
+  --c-surface-muted: #232c28;
+  --c-sidebar: #131916;
+  --c-table-head: #1e2723;
+
+  --c-border: #2a332f;
+  --c-border-strong: #3b4642;
+
+  --c-text: #e6ece9;
+  --c-text-secondary: #c5cec9;
+  --c-text-muted: #9aa6a0;
+  --c-text-subtle: #6f7a75;
+
+  --c-brand: #0f7a52;
+  --c-brand-hover: #12905f;
+  --c-brand-disabled: #2b5a45;
+  --c-on-brand: #ffffff;
+
+  --c-primary: #4cc38a;
+  --c-primary-strong: #6fd3a5;
+  --c-primary-soft: #1a2e25;
+  --c-primary-soft-hover: #213a2f;
+  --c-primary-border: #2c4a3c;
+  --c-focus-ring: rgba(76, 195, 138, 0.18);
+
+  --c-danger: #f87171;
+  --c-danger-soft: #3a1d1d;
+  --c-warning: #f2b84b;
+  --c-warning-soft: #3a2e14;
+  --c-info: #8fb4f0;
+  --c-info-soft: #1c2738;
+  --c-highlight: #d5eaa3;
+
+  --c-shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* Escala de fonte: todos os tamanhos em rem acompanham o <html> */
+html {
+  font-size: 16px;
+}
+html[data-font-size='small'] {
+  font-size: 14px;
+}
+html[data-font-size='large'] {
+  font-size: 18px;
+}
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.45;
+  color: var(--c-text);
+  background: var(--c-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
 }
 
 html,
@@ -56,6 +125,8 @@ body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
+  background: var(--c-bg);
+  transition: background-color 0.2s ease;
 }
 
 #root {
@@ -71,48 +142,11 @@ body {
 
 h1,
 h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-weight: 600;
+  color: var(--c-text);
+  margin: 0;
 }
 
 p {
   margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
 }

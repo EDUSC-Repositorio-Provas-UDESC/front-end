@@ -39,7 +39,7 @@ function ContentPDF() {
     ];
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#f4f6f5' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--c-bg)' }}>
             <SideBar defaultActive="anotacoes" />
 
             <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, minHeight: 0 }}>
@@ -65,16 +65,16 @@ function ContentPDF() {
                             <Typography
                                 component="h1"
                                 sx={{
-                                    fontSize: { xs: 22, md: 28 },
+                                    fontSize: { xs: '1.1875rem', md: '1.5rem' },
                                     fontWeight: 700,
-                                    color: '#1f2d27',
+                                    color: 'var(--c-text)',
                                     letterSpacing: '-0.5px',
                                     lineHeight: 1.25,
                                 }}
                             >
                                 {resource?.title}
                             </Typography>
-                            <Typography sx={{ fontSize: 13, color: '#6b7280', marginTop: '6px' }}>
+                            <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-muted)', marginTop: '6px' }}>
                                 {resource?.description}
                             </Typography>
                         </Box>
@@ -88,12 +88,12 @@ function ContentPDF() {
                             variant="contained"
                             startIcon={<FileDownloadOutlinedIcon sx={{ fontSize: 18 }} />}
                             sx={{
-                                backgroundColor: '#006b47',
-                                '&:hover': { backgroundColor: '#005236' },
-                                color: '#ffffff',
+                                backgroundColor: 'var(--c-brand)',
+                                '&:hover': { backgroundColor: 'var(--c-brand-hover)' },
+                                color: 'var(--c-on-brand)',
                                 textTransform: 'none',
                                 fontWeight: 600,
-                                fontSize: 13,
+                                fontSize: '0.8125rem',
                                 borderRadius: '8px',
                                 padding: '8px 18px',
                                 boxShadow: 'none',
@@ -107,12 +107,12 @@ function ContentPDF() {
                     {/* Chips / Metadados */}
                     <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                         {resource?.typeLabel && (
-                            <Box sx={{ backgroundColor: '#e9f4ee', color: '#006b47', fontSize: 11.5, fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
+                            <Box sx={{ backgroundColor: 'var(--c-primary-soft)', color: 'var(--c-primary)', fontSize: '0.7188rem', fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
                                 {resource.typeLabel}
                             </Box>
                         )}
                         {resource?.info && (
-                            <Box sx={{ backgroundColor: '#f3f4f6', color: '#4b5563', fontSize: 11.5, fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
+                            <Box sx={{ backgroundColor: 'var(--c-surface-muted)', color: 'var(--c-text-secondary)', fontSize: '0.7188rem', fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
                                 {resource.info}
                             </Box>
                         )}
@@ -129,8 +129,8 @@ function ContentPDF() {
                         {/* COLUNA ESQUERDA: Box do Visualizador de PDF */}
                         <Box
                             sx={{
-                                backgroundColor: '#ffffff',
-                                border: '1px solid #e5e7eb',
+                                backgroundColor: 'var(--c-surface)',
+                                border: '1px solid var(--c-border)',
                                 borderRadius: '12px',
                                 overflow: 'hidden',
                                 display: 'flex',
@@ -144,13 +144,13 @@ function ContentPDF() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    borderBottom: '1px solid #e5e7eb',
-                                    backgroundColor: '#ffffff',
+                                    borderBottom: '1px solid var(--c-border)',
+                                    backgroundColor: 'var(--c-surface)',
                                     flexWrap: 'wrap',
                                     gap: '10px',
                                 }}
                             >
-                                <Typography sx={{ fontSize: 12.5, color: '#4b5563', fontFamily: 'monospace' }}>
+                                <Typography sx={{ fontSize: '0.7812rem', color: 'var(--c-text-secondary)', fontFamily: 'monospace' }}>
                                     {fileName}
                                 </Typography>
                             </Box>
@@ -160,7 +160,7 @@ function ContentPDF() {
                                 sx={{
                                     height: '740px',
                                     overflowY: 'auto',
-                                    backgroundColor: '#eef1f0',
+                                    backgroundColor: 'var(--c-surface-muted)',
                                     display: 'flex',
                                     justifyContent: 'center',
                                 }}

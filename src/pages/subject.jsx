@@ -79,12 +79,12 @@ function Subject() {
     const tabs = subject && [
         { value: 'all', label: `Todos os materiais (${subject.counts.all})` },
         { value: 'prova', label: `Provas anteriores (${subject.counts.prova})` },
-        { value: 'exercicio', label: `Exercícios (${subject.counts.exercicio})` },
+        { value: 'link', label: `Links (${subject.counts.link})` },
         { value: 'atividade', label: `Atividades (${subject.counts.atividade})` },
     ];
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#f4f6f5' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--c-bg)' }}>
             <SideBar defaultActive="explorar" />
 
             <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, minHeight: 0 }}>
@@ -93,7 +93,7 @@ function Subject() {
                 {/* Apenas esta área rola; sidebar e header ficam fixos */}
                 <Box component="main" sx={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: { xs: '20px 16px', md: '32px 28px' }, display: 'flex', flexDirection: 'column', gap: '20px', '& > *': { flexShrink: 0 } }}>
                     {notFound && (
-                        <Typography sx={{ fontSize: 16, color: '#6b7280' }}>Disciplina não encontrada.</Typography>
+                        <Typography sx={{ fontSize: '1rem', color: 'var(--c-text-muted)' }}>Disciplina não encontrada.</Typography>
                     )}
 
                     {subject && (
@@ -101,13 +101,13 @@ function Subject() {
                             {/* Cabeçalho da disciplina */}
                             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'flex-start' }, justifyContent: 'space-between', gap: '16px' }}>
                                 <Box>
-                                    <Typography component="h1" sx={{ fontSize: { xs: 24, md: 28 }, fontWeight: 700, color: '#1f2d27', letterSpacing: '-0.5px' }}>
+                                    <Typography component="h1" sx={{ fontSize: { xs: '1.2812rem', md: '1.5rem' }, fontWeight: 700, color: 'var(--c-text)', letterSpacing: '-0.5px' }}>
                                         {subject.name}
                                     </Typography>
-                                    <Typography sx={{ fontSize: 12, color: '#6b7280', marginTop: '8px' }}>
+                                    <Typography sx={{ fontSize: '0.75rem', color: 'var(--c-text-muted)', marginTop: '8px' }}>
                                         {subject.courseLabel} / {subject.tag}
                                     </Typography>
-                                    <Typography sx={{ fontSize: 11, fontWeight: 700, color: '#1f2d27', marginTop: '18px' }}>
+                                    <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--c-text)', marginTop: '18px' }}>
                                         {subject.teacher}
                                     </Typography>
                                 </Box>
@@ -117,7 +117,7 @@ function Subject() {
                                         variant="outlined"
                                         onClick={() => setFavorite(!favorite)}
                                         startIcon={favorite ? <StarRoundedIcon /> : <StarBorderOutlinedIcon />}
-                                        sx={{ textTransform: 'none', fontWeight: 600, fontSize: 12.5, color: '#1f2d27', borderColor: '#e5e7eb', backgroundColor: '#ffffff', borderRadius: '7px', height: '36px' }}
+                                        sx={{ textTransform: 'none', fontWeight: 600, fontSize: '0.7812rem', color: 'var(--c-text)', borderColor: 'var(--c-border)', backgroundColor: 'var(--c-surface)', borderRadius: '7px', height: '36px' }}
                                     >
                                         {favorite ? 'Favoritada' : 'Favoritar'}
                                     </Button>
@@ -125,7 +125,7 @@ function Subject() {
                                         fullWidth={false}
                                         onClick={() => navigate(`/conteudos/novo?disciplina=${subject.tag}`)}
                                         startIcon={<AddIcon />}
-                                        sx={{ height: '36px', fontSize: 12.5, whiteSpace: 'nowrap', margin: '0px !important' }}
+                                        sx={{ height: '36px', fontSize: '0.7812rem', whiteSpace: 'nowrap', margin: '0px !important' }}
                                     >
                                         Adicionar conteúdo
                                     </PrimaryButton>
@@ -140,10 +140,10 @@ function Subject() {
                                 scrollButtons={false}
                                 sx={{
                                     minHeight: 40,
-                                    borderBottom: '1px solid #e5e7eb',
-                                    '& .MuiTabs-indicator': { backgroundColor: '#006b47' },
-                                    '& .MuiTab-root': { textTransform: 'none', minHeight: 40, minWidth: 0, padding: '8px 0', marginRight: '28px', fontSize: 12.5, fontWeight: 500, color: '#6b7280' },
-                                    '& .MuiTab-root.Mui-selected': { color: '#006b47', fontWeight: 700 },
+                                    borderBottom: '1px solid var(--c-border)',
+                                    '& .MuiTabs-indicator': { backgroundColor: 'var(--c-brand)' },
+                                    '& .MuiTab-root': { textTransform: 'none', minHeight: 40, minWidth: 0, padding: '8px 0', marginRight: '28px', fontSize: '0.7812rem', fontWeight: 500, color: 'var(--c-text-muted)' },
+                                    '& .MuiTab-root.Mui-selected': { color: 'var(--c-primary)', fontWeight: 700 },
                                 }}
                             >
                                 {tabs.map((tab) => (
@@ -158,14 +158,14 @@ function Subject() {
                                 value={search}
                                 onChange={(e) => handleSearch(e.target.value)}
                                 placeholder="Buscar nesta disciplina"
-                                startAdornment={<SearchIcon sx={{ color: '#6b7280', marginRight: '10px', fontSize: 20 }} />}
-                                endAdornment={<Typography sx={{ fontSize: 10, color: '#6b7280', display: { xs: 'none', sm: 'block' } }}>⌘ K</Typography>}
-                                sx={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '8px 14px', fontSize: 13 }}
+                                startAdornment={<SearchIcon sx={{ color: 'var(--c-text-muted)', marginRight: '10px', fontSize: 20 }} />}
+                                endAdornment={<Typography sx={{ fontSize: '0.625rem', color: 'var(--c-text-muted)', display: { xs: 'none', sm: 'block' } }}>⌘ K</Typography>}
+                                sx={{ backgroundColor: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '8px', padding: '8px 14px', fontSize: '0.8125rem' }}
                             />
 
                             {/* Recursos */}
-                            <Box sx={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '14px', padding: { xs: '18px 16px 14px', md: '22px 22px 16px' } }}>
-                                <Typography component="h2" sx={{ fontSize: 17, fontWeight: 700, color: '#1f2d27', marginBottom: '6px' }}>
+                            <Box sx={{ backgroundColor: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '14px', padding: { xs: '18px 16px 14px', md: '22px 22px 16px' } }}>
+                                <Typography component="h2" sx={{ fontSize: '0.9688rem', fontWeight: 700, color: 'var(--c-text)', marginBottom: '6px' }}>
                                     Recursos da disciplina
                                 </Typography>
 
@@ -186,17 +186,17 @@ function Subject() {
                                 ))}
 
                                 {resources.total === 0 && (
-                                    <Typography sx={{ fontSize: 13, color: '#6b7280', padding: '20px 0' }}>
+                                    <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-muted)', padding: '20px 0' }}>
                                         Nenhum recurso encontrado.
                                     </Typography>
                                 )}
 
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '14px', fontSize: 11, color: '#6b7280' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '14px', fontSize: '0.6875rem', color: 'var(--c-text-muted)' }}>
                                     <span>Exibindo {resources.items.length} de {resources.total} recursos</span>
                                     {resources.items.length < resources.total && (
                                         <>
                                             <span>•</span>
-                                            <Button onClick={() => setLimit(limit + PAGE_STEP)} sx={{ textTransform: 'none', minWidth: 0, padding: 0, fontSize: 11, color: '#6b7280' }}>
+                                            <Button onClick={() => setLimit(limit + PAGE_STEP)} sx={{ textTransform: 'none', minWidth: 0, padding: 0, fontSize: '0.6875rem', color: 'var(--c-text-muted)' }}>
                                                 Carregar mais ↓
                                             </Button>
                                         </>

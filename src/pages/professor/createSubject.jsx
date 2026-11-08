@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Box,
@@ -11,12 +11,12 @@ import {
     Divider,
     CircularProgress,
     Alert,
-    Button,
 } from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import ErrorOutlinedIcon from '@mui/icons-material/ErrorOutlined';
 import CheckIcon from '@mui/icons-material/Check';
 import SideBar from '../../components/sideBar/sideBar';
+import Header from '../../components/header/header';
 import PrimaryButton from '../../components/common/PrimaryButton';
 import { loginService } from '../../services/loginService';
 const { getCurrentUser } = loginService;
@@ -32,14 +32,14 @@ function FormField({ label, required, children, helperText, helperColor }) {
         <Box sx={{ mb: 3 }}>
             <Typography
                 variant="body2"
-                sx={{ fontWeight: 600, color: '#374151', mb: 0.75 }}
+                sx={{ fontWeight: 600, color: 'var(--c-text-secondary)', mb: 0.75 }}
             >
                 {label}
-                {required && <span style={{ color: '#005c3b' }}> *</span>}
+                {required && <span style={{ color: 'var(--c-primary-strong)' }}> *</span>}
             </Typography>
             {children}
             {helperText && (
-                <Typography variant="caption" sx={{ color: helperColor || '#6b7280', mt: 0.5, display: 'block' }}>
+                <Typography variant="caption" sx={{ color: helperColor || 'var(--c-text-muted)', mt: 0.5, display: 'block' }}>
                     {helperText}
                 </Typography>
             )}
@@ -59,15 +59,15 @@ function StyledInput({ value, onChange, placeholder, multiline, rows, ...props }
             fullWidth
             {...props}
             sx={{
-                border: '1px solid #d1d5db',
+                border: '1px solid var(--c-border-strong)',
                 borderRadius: 2,
                 px: 2,
                 py: multiline ? 1.5 : 0,
                 fontSize: '0.9375rem',
-                color: '#111827',
-                bgcolor: '#fff',
+                color: 'var(--c-text)',
+                bgcolor: 'var(--c-surface)',
                 alignItems: multiline ? 'flex-start' : 'center',
-                '&.Mui-focused': { borderColor: '#005c3b', boxShadow: '0 0 0 3px rgba(0,92,59,0.08)' },
+                '&.Mui-focused': { borderColor: 'var(--c-primary-strong)', boxShadow: '0 0 0 3px var(--c-focus-ring)' },
                 '& input': { py: 1.25 },
                 ...props.sx,
             }}
@@ -185,10 +185,19 @@ export default function CreateSubject() {
                 ? 'Código já utilizado neste curso.'
                 : '';
 
-    const codeHelperColor = codeStatus === 'available' ? '#005c3b' : codeStatus === 'unavailable' ? '#dc2626' : '#6b7280';
+    const codeHelperColor = codeStatus === 'available' ? 'var(--c-primary-strong)' : codeStatus === 'unavailable' ? 'var(--c-danger)' : 'var(--c-text-muted)';
 
     return (
-        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f9fafb' }}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                width: '100%',
+                height: '100vh',
+                overflow: 'hidden',
+                bgcolor: 'var(--c-bg)',
+            }}
+        >
             <SideBar
                 userName={user.name}
                 userRole="Professor"
@@ -197,207 +206,187 @@ export default function CreateSubject() {
                 userRoleKey="professor"
             />
 
-            <Box
-                component="main"
-                sx={{
-                    flex: 1,
-                    p: { xs: 2, sm: 3, md: 4 },
-                    mt: { xs: '56px', md: 0 },
-                    maxWidth: '800px',
-                    mx: 'auto',
-                    width: '100%',
-                }}
-            >
-                {/* Breadcrumb */}
-                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 3 }}>
-                    Espaço acadêmico / Painel do professor / Criar matéria
-                </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, minHeight: 0 }}>
+                <Header breadcrumbs={[
+                        { label: 'Espaço acadêmico', href: '/home' },
+                        { label: 'Painel do professor', href: '/professor/painel' },
+                        { label: 'Criar matéria' },
+                    ]} />
 
-                {/* Header */}
-                <Box sx={{ mb: 4 }}>
-                    <Typography
-                        variant="h4"
-                        sx={{ fontWeight: 800, color: '#111827', fontSize: { xs: '1.5rem', md: '2rem' }, mb: 0.5 }}
+                {/* Área de conteúdo rolável (sidebar e header ficam fixos) */}
+                <Box component="main" sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+                    <Box
+                        sx={{
+                            p: { xs: 2, sm: 3, md: 4 },
+                            maxWidth: '800px',
+                            mx: 'auto',
+                            width: '100%',
+                            boxSizing: 'border-box',
+                        }}
                     >
-                        Uma nova matéria, novas possibilidades.
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: '#6b7280' }}>
-                        Organize uma disciplina e prepare um espaço de aprendizagem para a turma.
-                    </Typography>
-                </Box>
-
-                {/* Alertas */}
-                {error && (
-                    <Alert severity="error" icon={<ErrorOutlinedIcon />} sx={{ mb: 3, borderRadius: 2 }} onClose={() => setError('')}>
-                        {error}
-                    </Alert>
-                )}
-                {success && (
-                    <Alert severity="success" icon={<CheckCircleOutlinedIcon />} sx={{ mb: 3, borderRadius: 2 }}>
-                        {success}
-                    </Alert>
-                )}
-
-                {/* Card de Formulário */}
-                <Card variant="outlined" sx={{ borderRadius: 3, border: '1px solid #e0e0e0' }}>
-                    <CardContent sx={{ p: { xs: 2.5, sm: 3.5 } }}>
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#111827', mb: 0.5 }}>
-                            Informações da disciplina
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 3 }}>
-                            Campos com * são obrigatórios. Matéria é uma disciplina vinculada a um curso de graduação.
-                        </Typography>
-
-                        <Divider sx={{ mb: 3 }} />
-
-                        {/* Nome da matéria */}
-                        <FormField label="Nome da matéria" required>
-                            <StyledInput
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder="Ex: Cálculo II"
-                            />
-                        </FormField>
-
-                        {/* Código da disciplina */}
-                        <FormField
-                            label="Código da disciplina"
-                            required
-                            helperText={codeHelperText}
-                            helperColor={codeHelperColor}
-                        >
-                            <StyledInput
-                                value={code}
-                                onChange={(e) => setCode(e.target.value.toUpperCase())}
-                                placeholder="Ex: CAL2001"
-                            />
-                        </FormField>
-
-                        {/* Curso de graduação */}
-                        <Box sx={{ mb: 3 }}>
+                        {/* Header */}
+                        <Box sx={{ mb: 4 }}>
                             <Typography
-                                variant="body2"
-                                sx={{ fontWeight: 600, color: '#374151', mb: 0.75 }}
+                                variant="h4"
+                                sx={{ fontWeight: 800, color: 'var(--c-text)', fontSize: { xs: '1.0938rem', md: '1.5625rem' }, mb: 0.5 }}
                             >
-                                Curso de graduação <span style={{ color: '#005c3b' }}>*</span>
+                                Criar Matéria
                             </Typography>
-                            {loadingCourses ? (
-                                <CircularProgress size={20} sx={{ color: '#005c3b' }} />
-                            ) : (
-                                <Select
-                                    fullWidth
-                                    value={courseId}
-                                    onChange={(e) => setCourseId(e.target.value)}
-                                    displayEmpty
+                        </Box>
+
+                        {/* Alertas */}
+                        {error && (
+                            <Alert severity="error" icon={<ErrorOutlinedIcon />} sx={{ mb: 3, borderRadius: 2 }} onClose={() => setError('')}>
+                                {error}
+                            </Alert>
+                        )}
+                        {success && (
+                            <Alert severity="success" icon={<CheckCircleOutlinedIcon />} sx={{ mb: 3, borderRadius: 2 }}>
+                                {success}
+                            </Alert>
+                        )}
+
+                        {/* Card de Formulário */}
+                        <Card variant="outlined" sx={{ borderRadius: 3, border: '1px solid var(--c-border)' }}>
+                            <CardContent sx={{ p: { xs: 2.5, sm: 3.5 } }}>
+                                <Typography variant="h6" sx={{ fontWeight: 700, color: 'var(--c-text)', mb: 0.5 }}>
+                                    Informações da disciplina
+                                </Typography>
+
+                                <Divider sx={{ mb: 3 }} />
+
+                                {/* Nome da matéria */}
+                                <FormField label="Nome da matéria" required>
+                                    <StyledInput
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Ex: Cálculo II"
+                                    />
+                                </FormField>
+
+                                {/* Código da disciplina */}
+                                <FormField
+                                    label="Código da disciplina"
+                                    required
+                                    helperText={codeHelperText}
+                                    helperColor={codeHelperColor}
+                                >
+                                    <StyledInput
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value.toUpperCase())}
+                                        placeholder="Ex: CAL2001"
+                                    />
+                                </FormField>
+
+                                {/* Curso de graduação */}
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ fontWeight: 600, color: 'var(--c-text-secondary)', mb: 0.75 }}
+                                    >
+                                        Curso de graduação <span style={{ color: 'var(--c-primary-strong)' }}>*</span>
+                                    </Typography>
+                                    {loadingCourses ? (
+                                        <CircularProgress size={20} sx={{ color: 'var(--c-primary-strong)' }} />
+                                    ) : (
+                                        <Select
+                                            fullWidth
+                                            value={courseId}
+                                            onChange={(e) => setCourseId(e.target.value)}
+                                            displayEmpty
+                                            sx={{
+                                                border: '1px solid var(--c-border-strong)',
+                                                borderRadius: 2,
+                                                bgcolor: 'var(--c-surface)',
+                                                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                                '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                                '&.Mui-focused': { borderColor: 'var(--c-primary-strong)', boxShadow: '0 0 0 3px var(--c-focus-ring)' },
+                                                fontSize: '0.9375rem',
+                                                '& .MuiSelect-select': {
+                                                    py: 1.25,
+                                                    px: 2,
+                                                },
+                                            }}
+                                            renderValue={(v) => {
+                                                if (!v) {
+                                                    return <span style={{ color: 'var(--c-text-subtle)' }}>Selecione o curso</span>;
+                                                }
+                                                return courses.find((c) => c.value === v)?.label || v;
+                                            }}
+                                        >
+                                            {courses.map((c) => (
+                                                <MenuItem key={c.value} value={c.value}>
+                                                    {c.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
+                                </Box>
+
+                                {/* Professor responsável */}
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ fontWeight: 600, color: 'var(--c-text-secondary)', mb: 0.75 }}
+                                    >
+                                        Professor responsável <span style={{ color: 'var(--c-primary-strong)' }}>*</span>
+                                    </Typography>
+                                    <Select
+                                        fullWidth
+                                        value="current"
+                                        disabled
+                                        sx={{
+                                            border: '1px solid var(--c-border-strong)',
+                                            borderRadius: 2,
+                                            bgcolor: 'var(--c-surface-alt)',
+                                            '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                            fontSize: '0.9375rem',
+                                            color: 'var(--c-text-secondary)',
+                                            '& .MuiSelect-select': {
+                                                py: 1.25,
+                                                px: 2,
+                                            },
+                                        }}
+                                    >
+                                        <MenuItem value="current">{professorName} (você)</MenuItem>
+                                    </Select>
+                                </Box>
+
+                                {/* Descrição / ementa */}
+                                <FormField label="Descrição / ementa" required>
+                                    <StyledInput
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        placeholder="Descreva o conteúdo programático, objetivos e informações relevantes da disciplina."
+                                        multiline
+                                        rows={4}
+                                    />
+                                </FormField>
+
+                                {/* Rodapé: Botões */}
+                                <Box
                                     sx={{
-                                        border: '1px solid #d1d5db',
-                                        borderRadius: 2,
-                                        bgcolor: '#fff',
-                                        '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                        '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                        '&.Mui-focused': { borderColor: '#005c3b', boxShadow: '0 0 0 3px rgba(0,92,59,0.08)' },
-                                        fontSize: '0.9375rem',
-                                        '& .MuiSelect-select': {
-                                            py: 1.25,
-                                            px: 2,
-                                        },
-                                    }}
-                                    renderValue={(v) => {
-                                        if (!v) {
-                                            return <span style={{ color: '#9ca3af' }}>Selecione o curso</span>;
-                                        }
-                                        return courses.find((c) => c.value === v)?.label || v;
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        flexWrap: 'wrap',
+                                        gap: 2,
+                                        mt: 1,
                                     }}
                                 >
-                                    {courses.map((c) => (
-                                        <MenuItem key={c.value} value={c.value}>
-                                            {c.label}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            )}
-                        </Box>
-
-                        {/* Professor responsável */}
-                        <Box sx={{ mb: 3 }}>
-                            <Typography
-                                variant="body2"
-                                sx={{ fontWeight: 600, color: '#374151', mb: 0.75 }}
-                            >
-                                Professor responsável <span style={{ color: '#005c3b' }}>*</span>
-                            </Typography>
-                            <Select
-                                fullWidth
-                                value="current"
-                                disabled
-                                sx={{
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: 2,
-                                    bgcolor: '#f9fafb',
-                                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                    fontSize: '0.9375rem',
-                                    color: '#374151',
-                                    '& .MuiSelect-select': {
-                                        py: 1.25,
-                                        px: 2,
-                                    },
-                                }}
-                            >
-                                <MenuItem value="current">{professorName} (você)</MenuItem>
-                            </Select>
-                        </Box>
-
-                        {/* Descrição / ementa */}
-                        <FormField label="Descrição / ementa" required>
-                            <StyledInput
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Descreva o conteúdo programático, objetivos e informações relevantes da disciplina."
-                                multiline
-                                rows={4}
-                            />
-                        </FormField>
-
-                        {/* Rodapé: Botões */}
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                flexWrap: 'wrap',
-                                gap: 2,
-                                mt: 1,
-                            }}
-                        >
-                            <Button
-                                variant="outlined"
-                                onClick={() => handleSave('rascunho')}
-                                disabled={saving}
-                                sx={{
-                                    borderColor: '#d1d5db',
-                                    color: '#374151',
-                                    borderRadius: 2,
-                                    textTransform: 'none',
-                                    fontWeight: 600,
-                                    px: 3,
-                                    py: 1.25,
-                                    '&:hover': { borderColor: '#005c3b', color: '#005c3b', bgcolor: 'transparent' },
-                                }}
-                            >
-                                {saving ? 'Salvando...' : 'Salvar rascunho'}
-                            </Button>
-
-                            <PrimaryButton
-                                startIcon={<CheckIcon />}
-                                onClick={() => handleSave('publicado')}
-                                disabled={saving}
-                            >
-                                {saving ? 'Publicando...' : 'Publicar matéria'}
-                            </PrimaryButton>
-                        </Box>
-                    </CardContent>
-                </Card>
+                                    <PrimaryButton
+                                        startIcon={<CheckIcon />}
+                                        onClick={() => handleSave('publicado')}
+                                        disabled={saving}
+                                    >
+                                        {saving ? 'Publicando...' : 'Publicar matéria'}
+                                    </PrimaryButton>
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Box>
+                </Box>
             </Box>
         </Box>
     );

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, IconButton, Tooltip } from '@mui/material';
+import { Box, Typography, IconButton, Pagination } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
 
 import SideBar from '../components/sideBar/sideBar';
 import Header from '../components/header/header';
@@ -12,23 +11,34 @@ import PrimaryButton from '../components/common/PrimaryButton';
 import subjectService from '../services/subjectService';
 import loginService from '../services/loginService';
 
+// Quantidade de contribuições por página
+const PAGE_SIZE = 5;
+
 function MyContents() {
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
-    const [sortDesc, setSortDesc] = useState(true);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
     const [userRole, setUserRole] = useState(() => {
         const u = loginService.getCurrentUser();
         return String(u?.role || 'aluno').toLowerCase();
     });
 
-    const loadContributions = async () => {
-        const data = await subjectService.getMyContributions();
-        setItems(data);
+    const loadContributions = async (targetPage = page) => {
+        const data = await subjectService.getMyContributions({ page: targetPage, pageSize: PAGE_SIZE });
+        // Se a página ficou vazia (ex.: excluiu o último item dela), volta uma página
+        if (data.items.length === 0 && targetPage > 1) {
+            setPage(targetPage - 1);
+            return;
+        }
+        setItems(data.items);
+        setTotal(data.total);
     };
 
     useEffect(() => {
-        loadContributions();
-    }, [userRole]);
+        loadContributions(page);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userRole, page]);
 
     const handleToggleRole = () => {
         const nextRole = userRole === 'aluno' ? 'professor' : 'aluno';
@@ -51,9 +61,9 @@ function MyContents() {
         loadContributions();
     };
 
-    const sortedItems = [...items].sort((a, b) =>
-        sortDesc ? (b.timestamp || 0) - (a.timestamp || 0) : (a.timestamp || 0) - (b.timestamp || 0)
-    );
+    const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    const firstShown = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+    const lastShown = Math.min(page * PAGE_SIZE, total);
 
     const breadcrumbs = [
         { label: 'Espaço acadêmico', href: '/home' },
@@ -61,7 +71,7 @@ function MyContents() {
     ];
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#f4f6f5' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--c-bg)' }}>
             <SideBar
                 defaultActive="conteudos"
                 userName={userRole === 'professor' ? 'Profa. Ana Martins' : 'Mariana Costa'}
@@ -91,9 +101,9 @@ function MyContents() {
                         <Typography
                             component="h1"
                             sx={{
-                                fontSize: { xs: 24, md: 28 },
+                                fontSize: { xs: '1.2812rem', md: '1.5rem' },
                                 fontWeight: 700,
-                                color: '#1f2d27',
+                                color: 'var(--c-text)',
                                 letterSpacing: '-0.5px',
                             }}
                         >
@@ -105,7 +115,7 @@ function MyContents() {
                                 fullWidth={false}
                                 onClick={() => navigate('/conteudos/novo')}
                                 startIcon={<AddIcon />}
-                                sx={{ height: '36px', fontSize: 12.5, whiteSpace: 'nowrap' }}
+                                sx={{ height: '36px', fontSize: '0.7812rem', whiteSpace: 'nowrap' }}
                             >
                                 Adicionar conteúdo
                             </PrimaryButton>
@@ -115,31 +125,17 @@ function MyContents() {
                     {/* Card: Minhas contribuições */}
                     <Box
                         sx={{
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #e5e7eb',
+                            backgroundColor: 'var(--c-surface)',
+                            border: '1px solid var(--c-border)',
                             borderRadius: '14px',
                             padding: { xs: '18px 16px', md: '24px 26px' },
                         }}
                     >
                         {/* Topo do card */}
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                            <Typography component="h2" sx={{ fontSize: 17, fontWeight: 700, color: '#1f2d27' }}>
+                            <Typography component="h2" sx={{ fontSize: '0.9688rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                 Minhas contribuições
                             </Typography>
-
-                            <Button
-                                onClick={() => setSortDesc(!sortDesc)}
-                                sx={{
-                                    textTransform: 'none',
-                                    fontSize: 12,
-                                    fontWeight: 700,
-                                    color: '#006b47',
-                                    padding: '2px 6px',
-                                    minWidth: 0,
-                                }}
-                            >
-                                {sortDesc ? 'Mais recentes →' : 'Mais antigos →'}
-                            </Button>
                         </Box>
 
                         {/* Cabeçalho da tabela */}
@@ -149,30 +145,30 @@ function MyContents() {
                                 gridTemplateColumns: { xs: '1fr auto auto', sm: '1fr 140px 80px' },
                                 alignItems: 'center',
                                 gap: '12px',
-                                backgroundColor: '#f4f6f5',
+                                backgroundColor: 'var(--c-bg)',
                                 borderRadius: '6px',
                                 padding: '8px 14px',
                             }}
                         >
-                            <Typography sx={{ fontSize: 10.5, fontWeight: 700, color: '#6b7280', letterSpacing: '0.4px' }}>
+                            <Typography sx={{ fontSize: '0.6562rem', fontWeight: 700, color: 'var(--c-text-muted)', letterSpacing: '0.4px' }}>
                                 CONTEÚDO / ENVIO
                             </Typography>
-                            <Typography sx={{ fontSize: 10.5, fontWeight: 700, color: '#6b7280', letterSpacing: '0.4px' }}>
+                            <Typography sx={{ fontSize: '0.6562rem', fontWeight: 700, color: 'var(--c-text-muted)', letterSpacing: '0.4px' }}>
                                 ESTADO
                             </Typography>
-                            <Typography sx={{ fontSize: 10.5, fontWeight: 700, color: '#6b7280', letterSpacing: '0.4px', textAlign: 'right' }}>
+                            <Typography sx={{ fontSize: '0.6562rem', fontWeight: 700, color: 'var(--c-text-muted)', letterSpacing: '0.4px', textAlign: 'right' }}>
                                 AÇÕES
                             </Typography>
                         </Box>
 
                         {/* Lista de itens */}
-                        {sortedItems.length === 0 && (
-                            <Typography sx={{ fontSize: 13, color: '#6b7280', padding: '28px 14px', textAlign: 'center' }}>
+                        {items.length === 0 && (
+                            <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-muted)', padding: '28px 14px', textAlign: 'center' }}>
                                 Você ainda não enviou nenhum conteúdo. Clique em &ldquo;Adicionar conteúdo&rdquo; para começar.
                             </Typography>
                         )}
 
-                        {sortedItems.map((item) => {
+                        {items.map((item) => {
                             const isPending = item.status === 'pendente';
 
                             return (
@@ -184,7 +180,7 @@ function MyContents() {
                                         alignItems: 'center',
                                         gap: '12px',
                                         padding: '18px 14px',
-                                        borderBottom: '1px solid #e5e7eb',
+                                        borderBottom: '1px solid var(--c-border)',
                                     }}
                                 >
                                     {/* Coluna 1: Informações da contribuição */}
@@ -192,27 +188,27 @@ function MyContents() {
                                         <Typography
                                             onClick={() => navigate(item.href)}
                                             sx={{
-                                                fontSize: 13.5,
+                                                fontSize: '0.8438rem',
                                                 fontWeight: 700,
-                                                color: '#1f2d27',
+                                                color: 'var(--c-text)',
                                                 cursor: 'pointer',
                                                 display: 'inline-block',
-                                                '&:hover': { color: '#006b47', textDecoration: 'underline' },
+                                                '&:hover': { color: 'var(--c-primary)', textDecoration: 'underline' },
                                             }}
                                         >
                                             {item.title}
                                         </Typography>
 
-                                        <Typography sx={{ fontSize: 11, color: '#6b7280', marginTop: '3px' }}>
+                                        <Typography sx={{ fontSize: '0.6875rem', color: 'var(--c-text-muted)', marginTop: '3px' }}>
                                             {item.typeLabel} • {item.subjectName} • {item.date}
                                         </Typography>
 
                                         {isPending ? (
-                                            <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#92400e', marginTop: '8px' }}>
+                                            <Typography sx={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--c-warning)', marginTop: '8px' }}>
                                                 Pedido {item.requestCode} enviado ao administrador • Aguardando análise
                                             </Typography>
                                         ) : (
-                                            <Typography sx={{ fontSize: 11, color: '#6b7280', marginTop: '8px' }}>
+                                            <Typography sx={{ fontSize: '0.6875rem', color: 'var(--c-text-muted)', marginTop: '8px' }}>
                                                 Publicado no acervo • Autoria: {item.author}
                                             </Typography>
                                         )}
@@ -223,9 +219,9 @@ function MyContents() {
                                         <Box
                                             sx={{
                                                 display: 'inline-block',
-                                                backgroundColor: isPending ? '#fef3c7' : '#e9f4ee',
-                                                color: isPending ? '#92400e' : '#006b47',
-                                                fontSize: 11,
+                                                backgroundColor: isPending ? 'var(--c-warning-soft)' : 'var(--c-primary-soft)',
+                                                color: isPending ? 'var(--c-warning)' : 'var(--c-primary)',
+                                                fontSize: '0.6875rem',
                                                 fontWeight: 700,
                                                 borderRadius: '6px',
                                                 padding: '3px 10px',
@@ -241,7 +237,7 @@ function MyContents() {
                                             size="small"
                                             onClick={() => navigate(`/conteudos/editar/${item.id}`)}
                                             aria-label="Editar contribuição"
-                                            sx={{ color: '#006b47' }}
+                                            sx={{ color: 'var(--c-primary)' }}
                                         >
                                             <EditOutlinedIcon sx={{ fontSize: 18 }} />
                                         </IconButton>
@@ -250,7 +246,7 @@ function MyContents() {
                                             size="small"
                                             onClick={() => handleDelete(item.id)}
                                             aria-label="Excluir contribuição"
-                                            sx={{ color: '#b91c1c' }}
+                                            sx={{ color: 'var(--c-danger)' }}
                                         >
                                             <DeleteOutlinedIcon sx={{ fontSize: 18 }} />
                                         </IconButton>
@@ -258,6 +254,41 @@ function MyContents() {
                                 </Box>
                             );
                         })}
+
+                        {/* Rodapé: contagem e paginação */}
+                        {total > 0 && (
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: { xs: 'column', sm: 'row' },
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '12px',
+                                    marginTop: '16px',
+                                }}
+                            >
+                                <Typography sx={{ fontSize: '0.75rem', color: 'var(--c-text-muted)' }}>
+                                    Exibindo {firstShown}–{lastShown} de {total} {total === 1 ? 'contribuição' : 'contribuições'}
+                                </Typography>
+                                {pageCount > 1 && (
+                                    <Pagination
+                                        count={pageCount}
+                                        page={page}
+                                        onChange={(_, value) => setPage(value)}
+                                        shape="rounded"
+                                        size="small"
+                                        sx={{
+                                            '& .MuiPaginationItem-root': { color: 'var(--c-text-muted)', fontWeight: 600 },
+                                            '& .MuiPaginationItem-root.Mui-selected': {
+                                                backgroundColor: 'var(--c-primary-soft)',
+                                                color: 'var(--c-primary)',
+                                                '&:hover': { backgroundColor: 'var(--c-primary-soft-hover)' },
+                                            },
+                                        }}
+                                    />
+                                )}
+                            </Box>
+                        )}
                     </Box>
                 </Box>
             </Box>

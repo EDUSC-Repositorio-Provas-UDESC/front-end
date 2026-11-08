@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import SideSectionJoinSite from '../components/sideSectionJoinSite/sideSectionJoinSite';
 import ComboBox from '../components/common/ComboBox';
@@ -15,7 +15,6 @@ import {
     Box,
     Typography,
     Radio,
-    Checkbox,
     FormControl,
     FormLabel,
     Alert
@@ -77,7 +76,7 @@ function Sigin() {
                 height: { xs: 'auto', md: '100vh' },
                 maxHeight: { xs: 'none', md: '100vh' },
                 width: '100vw',
-                backgroundColor: '#ffffff',
+                backgroundColor: 'var(--c-surface)',
                 overflow: { xs: 'auto', md: 'hidden' },
                 boxSizing: 'border-box',
             }}
@@ -99,7 +98,7 @@ function Sigin() {
                         sm: '32px 24px',
                         md: 'clamp(10px, 1.8vh, 24px) clamp(20px, 3vw, 40px)',
                     },
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--c-surface)',
                     boxSizing: 'border-box',
                 }}
             >
@@ -119,9 +118,9 @@ function Sigin() {
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '6px',
-                            color: '#006b47',
+                            color: 'var(--c-primary)',
                             textDecoration: 'none',
-                            fontSize: '12.5px',
+                            fontSize: '0.7812rem',
                             fontWeight: 600,
                             marginBottom: 'clamp(4px, 1vh, 8px)',
                             cursor: 'pointer',
@@ -140,7 +139,7 @@ function Sigin() {
                         sx={{
                             fontSize: 'clamp(20px, 2.5vh, 26px)',
                             fontWeight: 700,
-                            color: '#111827',
+                            color: 'var(--c-text)',
                             letterSpacing: '-0.5px',
                             marginBottom: '2px',
                             lineHeight: 1.15,
@@ -153,7 +152,7 @@ function Sigin() {
                     <Typography
                         sx={{
                             fontSize: 'clamp(12px, 1.4vh, 13px)',
-                            color: '#6b7280',
+                            color: 'var(--c-text-muted)',
                             marginBottom: 'clamp(8px, 1.4vh, 12px)',
                             fontFamily: 'system-ui, -apple-system, sans-serif',
                         }}
@@ -163,12 +162,12 @@ function Sigin() {
 
                     {/* Mensagens de feedback da API */}
                     {errorMessage && (
-                        <Alert severity="error" sx={{ marginBottom: '10px', borderRadius: '7px', fontSize: '12px', padding: '4px 10px' }}>
+                        <Alert severity="error" sx={{ marginBottom: '10px', borderRadius: '7px', fontSize: '0.75rem', padding: '4px 10px' }}>
                             {errorMessage}
                         </Alert>
                     )}
                     {successMessage && (
-                        <Alert severity="success" sx={{ marginBottom: '10px', borderRadius: '7px', fontSize: '12px', padding: '4px 10px' }}>
+                        <Alert severity="success" sx={{ marginBottom: '10px', borderRadius: '7px', fontSize: '0.75rem', padding: '4px 10px' }}>
                             {successMessage}
                         </Alert>
                     )}
@@ -204,8 +203,8 @@ function Sigin() {
                             placeholder="conta@edu.udesc.br"
                             autoComplete="email"
                             required
-                            helperIcon={<CheckOutlinedIcon sx={{ fontSize: '13px', color: '#006b47' }} />}
-                            helperColor="#006b47"
+                            helperIcon={<CheckOutlinedIcon sx={{ fontSize: '13px', color: 'var(--c-primary)' }} />}
+                            helperColor="var(--c-primary)"
                         />
 
                         {/* Campo: Senha */}
@@ -242,11 +241,11 @@ function Sigin() {
                         <FormControl fullWidth>
                             <FormLabel
                                 sx={{
-                                    fontSize: '12px',
+                                    fontSize: '0.75rem',
                                     fontWeight: 600,
-                                    color: '#1f2937',
+                                    color: 'var(--c-text)',
                                     marginBottom: '3px',
-                                    '&.Mui-focused': { color: '#1f2937' },
+                                    '&.Mui-focused': { color: 'var(--c-text)' },
                                 }}
                             >
                                 Papel solicitado *
@@ -264,8 +263,8 @@ function Sigin() {
                                         padding: '7px 12px',
                                         borderRadius: '8px',
                                         cursor: 'pointer',
-                                        backgroundColor: role === 'aluno' ? '#e9f4ee' : '#ffffff',
-                                        border: role === 'aluno' ? '1.5px solid #006b47' : '1px solid #d1d5db',
+                                        backgroundColor: role === 'aluno' ? 'var(--c-primary-soft)' : 'var(--c-surface)',
+                                        border: role === 'aluno' ? '1.5px solid var(--c-primary)' : '1px solid var(--c-border-strong)',
                                         transition: 'all 0.15s ease',
                                     }}
                                 >
@@ -277,15 +276,15 @@ function Sigin() {
                                         size="small"
                                         sx={{
                                             padding: 0,
-                                            color: '#9ca3af',
-                                            '&.Mui-checked': { color: '#006b47' },
+                                            color: 'var(--c-text-subtle)',
+                                            '&.Mui-checked': { color: 'var(--c-primary)' },
                                         }}
                                     />
                                     <Typography
                                         sx={{
-                                            fontSize: '13px',
+                                            fontSize: '0.8125rem',
                                             fontWeight: role === 'aluno' ? 600 : 500,
-                                            color: role === 'aluno' ? '#111827' : '#374151',
+                                            color: role === 'aluno' ? 'var(--c-text)' : 'var(--c-text-secondary)',
                                         }}
                                     >
                                         Aluno
@@ -303,8 +302,8 @@ function Sigin() {
                                         padding: '7px 12px',
                                         borderRadius: '8px',
                                         cursor: 'pointer',
-                                        backgroundColor: role === 'professor' ? '#e9f4ee' : '#ffffff',
-                                        border: role === 'professor' ? '1.5px solid #006b47' : '1px solid #d1d5db',
+                                        backgroundColor: role === 'professor' ? 'var(--c-primary-soft)' : 'var(--c-surface)',
+                                        border: role === 'professor' ? '1.5px solid var(--c-primary)' : '1px solid var(--c-border-strong)',
                                         transition: 'all 0.15s ease',
                                     }}
                                 >
@@ -316,15 +315,15 @@ function Sigin() {
                                         size="small"
                                         sx={{
                                             padding: 0,
-                                            color: '#9ca3af',
-                                            '&.Mui-checked': { color: '#006b47' },
+                                            color: 'var(--c-text-subtle)',
+                                            '&.Mui-checked': { color: 'var(--c-primary)' },
                                         }}
                                     />
                                     <Typography
                                         sx={{
-                                            fontSize: '13px',
+                                            fontSize: '0.8125rem',
                                             fontWeight: role === 'professor' ? 600 : 500,
-                                            color: role === 'professor' ? '#111827' : '#374151',
+                                            color: role === 'professor' ? 'var(--c-text)' : 'var(--c-text-secondary)',
                                         }}
                                     >
                                         Professor
@@ -337,7 +336,7 @@ function Sigin() {
                         {roleTeacher && (
                             <Box
                                 sx={{
-                                    backgroundColor: '#edf3f8',
+                                    backgroundColor: 'var(--c-info-soft)',
                                     borderRadius: '8px',
                                     padding: '8px 12px',
                                     display: 'flex',
@@ -347,8 +346,8 @@ function Sigin() {
                             >
                                 <TaskAltOutlinedIcon
                                     sx={{
-                                        fontSize: '18px',
-                                        color: '#2563eb',
+                                        fontSize: '1.125rem',
+                                        color: 'var(--c-info)',
                                         marginTop: '2px',
                                         flexShrink: 0,
                                     }}
@@ -356,9 +355,9 @@ function Sigin() {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
                                     <Typography
                                         sx={{
-                                            fontSize: '12px',
+                                            fontSize: '0.75rem',
                                             fontWeight: 600,
-                                            color: '#1e3a5f',
+                                            color: 'var(--c-info)',
                                             lineHeight: 1.25,
                                         }}
                                     >
@@ -366,8 +365,8 @@ function Sigin() {
                                     </Typography>
                                     <Typography
                                         sx={{
-                                            fontSize: '11px',
-                                            color: '#3b526d',
+                                            fontSize: '0.6875rem',
+                                            color: 'var(--c-text-secondary)',
                                             lineHeight: 1.35,
                                         }}
                                     >
@@ -390,8 +389,8 @@ function Sigin() {
                     {/* Rodapé institucional */}
                     <Typography
                         sx={{
-                            fontSize: '11px',
-                            color: '#9ca3af',
+                            fontSize: '0.6875rem',
+                            color: 'var(--c-text-subtle)',
                             marginTop: 'clamp(8px, 1.2vh, 12px)',
                             textAlign: 'left',
                             fontFamily: 'system-ui, -apple-system, sans-serif',

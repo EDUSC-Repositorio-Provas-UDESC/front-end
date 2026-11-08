@@ -76,7 +76,7 @@ function AnnotationDetails() {
                 width: '100%',
                 height: '100vh',
                 overflow: 'hidden',
-                backgroundColor: '#f4f6f5',
+                backgroundColor: 'var(--c-bg)',
             }}
         >
             <SideBar
@@ -102,7 +102,7 @@ function AnnotationDetails() {
                     }}
                 >
                     {!loading && !resource && (
-                        <Typography sx={{ fontSize: 15, color: '#6b7280' }}>
+                        <Typography sx={{ fontSize: '0.9375rem', color: 'var(--c-text-muted)' }}>
                             Conteúdo ou anotações não encontradas.
                         </Typography>
                     )}
@@ -126,9 +126,9 @@ function AnnotationDetails() {
                                         sx={{
                                             alignSelf: 'flex-start',
                                             textTransform: 'none',
-                                            fontSize: 12.5,
+                                            fontSize: '0.7812rem',
                                             fontWeight: 700,
-                                            color: '#0b6440',
+                                            color: 'var(--c-primary)',
                                             padding: '2px 8px',
                                             marginLeft: '-8px',
                                         }}
@@ -139,9 +139,9 @@ function AnnotationDetails() {
                                     <Typography
                                         component="h1"
                                         sx={{
-                                            fontSize: { xs: 22, md: 27 },
+                                            fontSize: { xs: '1.1875rem', md: '1.4375rem' },
                                             fontWeight: 700,
-                                            color: '#1f2d27',
+                                            color: 'var(--c-text)',
                                             letterSpacing: '-0.5px',
                                         }}
                                     >
@@ -152,9 +152,9 @@ function AnnotationDetails() {
                                         {resource.typeLabel && (
                                             <Box
                                                 sx={{
-                                                    backgroundColor: '#e6f4ed',
-                                                    color: '#0b6440',
-                                                    fontSize: 11.5,
+                                                    backgroundColor: 'var(--c-primary-soft)',
+                                                    color: 'var(--c-primary)',
+                                                    fontSize: '0.7188rem',
                                                     fontWeight: 700,
                                                     padding: '3px 10px',
                                                     borderRadius: '6px',
@@ -163,7 +163,7 @@ function AnnotationDetails() {
                                                 {resource.typeLabel}
                                             </Box>
                                         )}
-                                        <Typography sx={{ fontSize: 13, color: '#6b7a71' }}>
+                                        <Typography sx={{ fontSize: '0.8125rem', color: 'var(--c-text-muted)' }}>
                                             {[resource.subjectName, resource.teacher].filter(Boolean).join(' • ')}
                                         </Typography>
                                     </Box>
@@ -176,16 +176,16 @@ function AnnotationDetails() {
                                         startIcon={<AddIcon />}
                                         sx={{
                                             textTransform: 'none',
-                                            fontSize: 12.5,
+                                            fontSize: '0.7812rem',
                                             fontWeight: 600,
-                                            color: '#0b6440',
-                                            borderColor: '#cfe2d8',
-                                            backgroundColor: '#ffffff',
+                                            color: 'var(--c-primary)',
+                                            borderColor: 'var(--c-primary-border)',
+                                            backgroundColor: 'var(--c-surface)',
                                             borderRadius: '8px',
                                             height: '36px',
                                             '&:hover': {
-                                                borderColor: '#0b6440',
-                                                backgroundColor: '#eef6f2',
+                                                borderColor: 'var(--c-primary)',
+                                                backgroundColor: 'var(--c-primary-soft)',
                                             },
                                         }}
                                     >
@@ -196,7 +196,7 @@ function AnnotationDetails() {
                                         <PrimaryButton
                                             fullWidth={false}
                                             onClick={() => navigate(resource.href)}
-                                            sx={{ height: '36px', fontSize: 12.5, whiteSpace: 'nowrap' }}
+                                            sx={{ height: '36px', fontSize: '0.7812rem', whiteSpace: 'nowrap' }}
                                         >
                                             Abrir conteúdo →
                                         </PrimaryButton>
@@ -208,8 +208,8 @@ function AnnotationDetails() {
                             {showNewNoteForm && (
                                 <Box
                                     sx={{
-                                        backgroundColor: '#ffffff',
-                                        border: '1px solid #cfe2d8',
+                                        backgroundColor: 'var(--c-surface)',
+                                        border: '1px solid var(--c-primary-border)',
                                         borderRadius: '12px',
                                         padding: '18px 20px',
                                         display: 'flex',
@@ -217,7 +217,7 @@ function AnnotationDetails() {
                                         gap: '12px',
                                     }}
                                 >
-                                    <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#1f2d27' }}>
+                                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                         Adicionar anotação em &ldquo;{resource.title}&rdquo;
                                     </Typography>
 
@@ -226,11 +226,11 @@ function AnnotationDetails() {
                                         value={newNoteTitle}
                                         onChange={(e) => setNewNoteTitle(e.target.value)}
                                         sx={{
-                                            border: '1px solid #dce5df',
+                                            border: '1px solid var(--c-border)',
                                             borderRadius: '8px',
                                             padding: '7px 12px',
-                                            fontSize: 13,
-                                            backgroundColor: '#fbfcfb',
+                                            fontSize: '0.8125rem',
+                                            backgroundColor: 'var(--c-surface-alt)',
                                         }}
                                     />
 
@@ -241,11 +241,11 @@ function AnnotationDetails() {
                                         value={newNoteContent}
                                         onChange={(e) => setNewNoteContent(e.target.value)}
                                         sx={{
-                                            border: '1px solid #dce5df',
+                                            border: '1px solid var(--c-border)',
                                             borderRadius: '8px',
                                             padding: '9px 12px',
-                                            fontSize: 13,
-                                            backgroundColor: '#fbfcfb',
+                                            fontSize: '0.8125rem',
+                                            backgroundColor: 'var(--c-surface-alt)',
                                         }}
                                     />
 
@@ -254,9 +254,9 @@ function AnnotationDetails() {
                                             onClick={() => setShowNewNoteForm(false)}
                                             sx={{
                                                 textTransform: 'none',
-                                                fontSize: 12.5,
+                                                fontSize: '0.7812rem',
                                                 fontWeight: 600,
-                                                color: '#5f6f66',
+                                                color: 'var(--c-text-secondary)',
                                             }}
                                         >
                                             Cancelar
@@ -264,7 +264,7 @@ function AnnotationDetails() {
                                         <PrimaryButton
                                             fullWidth={false}
                                             onClick={handleSaveNewNote}
-                                            sx={{ height: '34px', fontSize: 12.5 }}
+                                            sx={{ height: '34px', fontSize: '0.7812rem' }}
                                         >
                                             Salvar anotação
                                         </PrimaryButton>
@@ -275,8 +275,8 @@ function AnnotationDetails() {
                             {/* Card listando todas as anotações deste título */}
                             <Box
                                 sx={{
-                                    backgroundColor: '#ffffff',
-                                    border: '1px solid #e2ebe5',
+                                    backgroundColor: 'var(--c-surface)',
+                                    border: '1px solid var(--c-border)',
                                     borderRadius: '14px',
                                     padding: { xs: '18px 16px', md: '24px 26px' },
                                     display: 'flex',
@@ -284,15 +284,15 @@ function AnnotationDetails() {
                                     gap: '14px',
                                 }}
                             >
-                                <Typography component="h2" sx={{ fontSize: 16.5, fontWeight: 700, color: '#1f2d27' }}>
+                                <Typography component="h2" sx={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--c-text)' }}>
                                     Anotações salvas neste conteúdo ({resource.notes?.length || 0})
                                 </Typography>
 
                                 {!resource.notes || resource.notes.length === 0 ? (
                                     <Typography
                                         sx={{
-                                            fontSize: 13.5,
-                                            color: '#7a8a80',
+                                            fontSize: '0.8438rem',
+                                            color: 'var(--c-text-muted)',
                                             textAlign: 'center',
                                             padding: '24px 0',
                                         }}
@@ -305,10 +305,10 @@ function AnnotationDetails() {
                                             <Box
                                                 key={note.id}
                                                 sx={{
-                                                    border: '1px solid #e4ece7',
+                                                    border: '1px solid var(--c-border)',
                                                     borderRadius: '10px',
                                                     padding: '16px 18px',
-                                                    backgroundColor: '#fbfdfc',
+                                                    backgroundColor: 'var(--c-surface-alt)',
                                                     display: 'flex',
                                                     flexDirection: 'column',
                                                     gap: '6px',
@@ -324,16 +324,16 @@ function AnnotationDetails() {
                                                 >
                                                     <Typography
                                                         sx={{
-                                                            fontSize: 14.5,
+                                                            fontSize: '0.9062rem',
                                                             fontWeight: 700,
-                                                            color: '#1f2d27',
+                                                            color: 'var(--c-text)',
                                                         }}
                                                     >
                                                         {note.title}
                                                     </Typography>
 
                                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                        <Typography sx={{ fontSize: 11.5, color: '#8a9990' }}>
+                                                        <Typography sx={{ fontSize: '0.7188rem', color: 'var(--c-text-muted)' }}>
                                                             {note.date}
                                                         </Typography>
                                                         <IconButton
@@ -341,9 +341,9 @@ function AnnotationDetails() {
                                                             onClick={() => handleDeleteNote(note.id)}
                                                             title="Excluir anotação"
                                                             sx={{
-                                                                color: '#b42318',
+                                                                color: 'var(--c-danger)',
                                                                 padding: '4px',
-                                                                '&:hover': { backgroundColor: '#fef2f2' },
+                                                                '&:hover': { backgroundColor: 'var(--c-danger-soft)' },
                                                             }}
                                                         >
                                                             <DeleteOutlinedIcon sx={{ fontSize: 16 }} />
@@ -353,8 +353,8 @@ function AnnotationDetails() {
 
                                                 <Typography
                                                     sx={{
-                                                        fontSize: 13.5,
-                                                        color: '#3f4f46',
+                                                        fontSize: '0.8438rem',
+                                                        color: 'var(--c-text-secondary)',
                                                         lineHeight: 1.55,
                                                         whiteSpace: 'pre-wrap',
                                                     }}
