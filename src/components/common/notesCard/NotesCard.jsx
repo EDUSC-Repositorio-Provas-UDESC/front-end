@@ -11,15 +11,16 @@ import subjectService from '../../../services/subjectService';
 import './NotesCard.css';
 
 /** Painel de anotações do usuário para um recurso específico. */
-export default function NotesCard({ resourceId = 'CAL1001-1' }) {
+export default function NotesCard({ resourceId }) {
     const contentRef = useRef(null);
 
     const [tab, setTab] = useState('nova');
     const [notes, setNotes] = useState([]);
-    const [title, setTitle] = useState('Revisar a questão 02');
-    const [content, setContent] = useState('Antes de substituir, fatorar x² − 9 = (x − 3)(x + 3). O limite é 6.');
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
 
     useEffect(() => {
+        if (!resourceId) return;
         const loadNotes = async () => {
             setNotes(await subjectService.getNotes(resourceId));
         };

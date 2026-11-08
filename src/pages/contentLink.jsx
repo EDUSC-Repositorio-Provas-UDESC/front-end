@@ -35,20 +35,16 @@ const KIND_CONFIG = {
 
 function ContentLink() {
     const { id } = useParams();
-    const resourceId = id || 'CAL1001-4';
 
     const [resource, setResource] = useState(null);
     const [filter, setFilter] = useState('all');
-    const [activeVideo, setActiveVideo] = useState(null);
 
     useEffect(() => {
         let isMounted = true;
         const load = async () => {
-            const data = await subjectService.getContentLink(resourceId);
+            const data = await subjectService.getContentLink(id);
             if (isMounted) {
                 setResource(data);
-                const firstVideo = data?.links?.find((l) => l.embedUrl) || null;
-                setActiveVideo(firstVideo);
                 setFilter('all');
             }
         };
@@ -56,16 +52,16 @@ function ContentLink() {
         return () => {
             isMounted = false;
         };
-    }, [resourceId]);
+    }, [id]);
 
     const allLinks = resource?.links || [];
     const filteredLinks = allLinks.filter((item) => filter === 'all' || item.kind === filter);
 
     const breadcrumbs = [
         { label: 'Espaço acadêmico', href: '/home' },
-        { label: resource?.subjectName || 'Cálculo I', href: `/disciplina/${resource?.subjectTag || 'CAL1001'}` },
-        { label: resource?.categoryLabel || 'Links recomendados' },
-        { label: resource?.shortTitle || 'Limites' },
+        { label: resource?.subjectName, href: `/disciplina/${resource?.subjectTag}` },
+        { label: resource?.categoryLabel },
+        { label: resource?.shortTitle },
     ];
 
     return (
@@ -102,22 +98,26 @@ function ContentLink() {
                                     lineHeight: 1.25,
                                 }}
                             >
-                                {resource?.title || 'Limites: uma abordagem visual'}
+                                {resource?.title}
                             </Typography>
                             <Typography sx={{ fontSize: 13, color: '#6b7280', marginTop: '6px' }}>
-                                {resource?.description || 'Cálculo I • Profa. Ana Martins • Publicado em 15 out. 2026'}
+                                {resource?.description}
                             </Typography>
                         </Box>
                     </Box>
 
                     {/* Chips / Metadados */}
                     <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <Box sx={{ backgroundColor: '#e9f4ee', color: '#006b47', fontSize: 11.5, fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
-                            {resource?.typeLabel || 'Link recomendado'}
-                        </Box>
-                        <Box sx={{ backgroundColor: '#f3f4f6', color: '#4b5563', fontSize: 11.5, fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
-                            {resource?.info || `Vídeos e sites • ${allLinks.length} referências de estudo`}
-                        </Box>
+                        {resource?.typeLabel && (
+                            <Box sx={{ backgroundColor: '#e9f4ee', color: '#006b47', fontSize: 11.5, fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
+                                {resource.typeLabel}
+                            </Box>
+                        )}
+                        {resource?.info && (
+                            <Box sx={{ backgroundColor: '#f3f4f6', color: '#4b5563', fontSize: 11.5, fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
+                                {resource.info}
+                            </Box>
+                        )}
                     </Box>
 
                     {/* Grid Principal: Links de Estudo (Esquerda) + Anotações (Direita) */}
@@ -268,7 +268,7 @@ function ContentLink() {
                         </Box>
 
                         {/* COLUNA DIREITA: Minhas Anotações */}
-                        <NotesCard resourceId={resourceId} />
+                        <NotesCard resourceId={id} />
                     </Box>
                 </Box>
             </Box>

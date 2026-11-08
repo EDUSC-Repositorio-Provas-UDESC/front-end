@@ -16,9 +16,10 @@ const FORMAT_ICONS = {
 
 function resolveTargetHref(format, id, href) {
     if (href && href !== '#') return href;
-    if (format === 'PDF') return `/conteudo/${id || 'CAL1001-1'}`;
-    if (format === 'Link') return `/conteudo-link/${id || 'CAL1001-4'}`;
-    if (format === 'Atividade') return `/conteudo-atividade/${id || 'CAL1001-6'}`;
+    if (!id) return '#';
+    if (format === 'PDF') return `/conteudo/${id}`;
+    if (format === 'Link') return `/conteudo-link/${id}`;
+    if (format === 'Atividade') return `/conteudo-atividade/${id}`;
     return '#';
 }
 

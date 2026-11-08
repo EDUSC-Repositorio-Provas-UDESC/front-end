@@ -72,7 +72,7 @@ function Subject() {
 
     const breadcrumbs = [
         { label: 'Espaço acadêmico', href: '/home' },
-        { label: 'Explorar disciplinas', href: '/explorar' },
+        { label: 'Disciplinas', href: '/explorar' },
         { label: subject?.name ?? tag },
     ];
 

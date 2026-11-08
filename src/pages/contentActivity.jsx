@@ -30,14 +30,13 @@ function isDirectAnswerCorrect(userAnswer, correctAnswer) {
 
 function ContentActivity() {
     const { id } = useParams();
-    const resourceId = id || 'CAL1001-6';
     const [activity, setActivity] = useState(null);
     const [answers, setAnswers] = useState({});
 
     useEffect(() => {
         let isMounted = true;
         const load = async () => {
-            const data = await subjectService.getContentActivity(resourceId);
+            const data = await subjectService.getContentActivity(id);
             if (isMounted && data) {
                 setActivity(data);
                 setAnswers({});
@@ -47,7 +46,7 @@ function ContentActivity() {
         return () => {
             isMounted = false;
         };
-    }, [resourceId]);
+    }, [id]);
 
     const handleSelectOption = (questionId, optionId) => {
         setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
@@ -62,9 +61,9 @@ function ContentActivity() {
 
     const breadcrumbs = [
         { label: 'Espaço acadêmico', href: '/home' },
-        { label: activity?.subjectName || 'Cálculo I', href: `/disciplina/${activity?.subjectTag || 'CAL1001'}` },
-        { label: activity?.categoryLabel || 'Atividades' },
-        { label: activity?.shortTitle || 'Atividade 02' },
+        { label: activity?.subjectName, href: `/disciplina/${activity?.subjectTag}` },
+        { label: activity?.categoryLabel },
+        { label: activity?.shortTitle },
     ];
 
     return (
@@ -101,10 +100,10 @@ function ContentActivity() {
                                     lineHeight: 1.25,
                                 }}
                             >
-                                {activity?.title || 'Atividade 02 — Limites'}
+                                {activity?.title}
                             </Typography>
                             <Typography sx={{ fontSize: 13, color: '#6b7280', marginTop: '6px' }}>
-                                {activity?.description || 'Cálculo I • Profa. Ana Martins • Valor: 10,0 pontos'}
+                                {activity?.description}
                             </Typography>
                         </Box>
 
@@ -308,7 +307,7 @@ function ContentActivity() {
                         </Box>
 
                         {/* COLUNA DIREITA: Minhas Anotações */}
-                        <NotesCard resourceId={resourceId} />
+                        <NotesCard resourceId={id} />
                     </Box>
                 </Box>
             </Box>

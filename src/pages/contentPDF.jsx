@@ -7,11 +7,9 @@ import SideBar from '../components/sideBar/sideBar';
 import Header from '../components/header/header';
 import NotesCard from '../components/common/notesCard/NotesCard';
 import subjectService from '../services/subjectService';
-import samplePdf from '../assets/StradowskiMadeyski24FSE.pdf';
 
 function ContentPDF() {
     const { id } = useParams();
-    const resourceId = id || 'CAL1001-1';
 
     const [resource, setResource] = useState(null);
     const [currentPage] = useState(1);
@@ -19,7 +17,7 @@ function ContentPDF() {
     useEffect(() => {
         let isMounted = true;
         const load = async () => {
-            const data = await subjectService.getContentPDF(resourceId);
+            const data = await subjectService.getContentPDF(id);
             if (isMounted) {
                 setResource(data);
             }
@@ -28,17 +26,16 @@ function ContentPDF() {
         return () => {
             isMounted = false;
         };
-    }, [resourceId]);
+    }, [id]);
 
-    const totalPages = resource?.pages || 4;
-    const fileName = resource?.fileName || 'prova_1_calculo_I.pdf';
-    const fileUrl = resource?.fileUrl || samplePdf;
+    const fileName = resource?.fileName || '';
+    const fileUrl = resource?.fileUrl || '';
 
     const breadcrumbs = [
         { label: 'Espaço acadêmico', href: '/home' },
-        { label: resource?.subjectName || 'Cálculo I', href: `/disciplina/${resource?.subjectTag || 'CAL1001'}` },
-        { label: resource?.categoryLabel || 'Provas anteriores' },
-        { label: resource?.shortTitle || 'Prova 1' },
+        { label: resource?.subjectName, href: `/disciplina/${resource?.subjectTag}` },
+        { label: resource?.categoryLabel },
+        { label: resource?.shortTitle },
     ];
 
     return (
@@ -75,10 +72,10 @@ function ContentPDF() {
                                     lineHeight: 1.25,
                                 }}
                             >
-                                {resource?.title || 'Prova 1 — Limites e continuidade'}
+                                {resource?.title}
                             </Typography>
                             <Typography sx={{ fontSize: 13, color: '#6b7280', marginTop: '6px' }}>
-                                {resource?.description || 'Cálculo I • Profa. Ana Martins • Publicado em 19 out. 2026'}
+                                {resource?.description}
                             </Typography>
                         </Box>
 
@@ -109,12 +106,16 @@ function ContentPDF() {
 
                     {/* Chips / Metadados */}
                     <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <Box sx={{ backgroundColor: '#e9f4ee', color: '#006b47', fontSize: 11.5, fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
-                            {resource?.typeLabel || 'Prova anterior'}
-                        </Box>
-                        <Box sx={{ backgroundColor: '#f3f4f6', color: '#4b5563', fontSize: 11.5, fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
-                            {resource?.info || `PDF • 1,2 MB • ${totalPages} páginas`}
-                        </Box>
+                        {resource?.typeLabel && (
+                            <Box sx={{ backgroundColor: '#e9f4ee', color: '#006b47', fontSize: 11.5, fontWeight: 600, borderRadius: '6px', padding: '4px 10px' }}>
+                                {resource.typeLabel}
+                            </Box>
+                        )}
+                        {resource?.info && (
+                            <Box sx={{ backgroundColor: '#f3f4f6', color: '#4b5563', fontSize: 11.5, fontWeight: 500, borderRadius: '6px', padding: '4px 10px' }}>
+                                {resource.info}
+                            </Box>
+                        )}
                     </Box>
 
                     <Box
@@ -177,7 +178,7 @@ function ContentPDF() {
                         </Box>
 
                         {/* COLUNA DIREITA: Minhas Anotações */}
-                        <NotesCard resourceId={resourceId} />
+                        <NotesCard resourceId={id} />
                     </Box>
                 </Box>
             </Box>

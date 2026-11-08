@@ -22,7 +22,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 const MENU_ITEMS = [
     { id: 'inicio', label: 'Início', icon: <HomeOutlinedIcon /> },
-    { id: 'explorar', label: 'Explorar disciplinas', icon: <StyleRoundedIcon /> },
+    { id: 'explorar', label: 'Disciplinas', icon: <StyleRoundedIcon /> },
     { id: 'conteudos', label: 'Meus conteúdos', icon: <FolderOpenOutlinedIcon /> },
     { id: 'anotacoes', label: 'Anotações', icon: <EditNoteOutlinedIcon /> },
 ];

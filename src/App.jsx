@@ -15,6 +15,8 @@ import ContentLink from "./pages/contentLink";
 import ContentActivity from "./pages/contentActivity";
 import MyContents from "./pages/myContents";
 import ContentForm from "./pages/contentForm";
+import Annotations from "./pages/annotations";
+import AnnotationDetails from "./pages/annotationDetails";
 
 function App() {
 
@@ -36,7 +38,8 @@ function App() {
         <Route path="/conteudos" element={<MyContents />} />
         <Route path="/conteudos/novo" element={<ContentForm />} />
         <Route path="/conteudos/editar/:id" element={<ContentForm />} />
-        <Route path="/anotacoes" element={<ContentPDF />} />
+        <Route path="/anotacoes" element={<Annotations />} />
+        <Route path="/anotacoes/:id" element={<AnnotationDetails />} />
       </Routes>
     </BrowserRouter>
   )

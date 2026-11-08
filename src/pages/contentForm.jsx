@@ -24,63 +24,44 @@ const RESOURCE_TYPES = [
     { value: 'link', label: 'Link' },
 ];
 
-const DEFAULT_QUESTIONS = [
-    {
-        id: 'q-1',
-        number: '01',
-        title: 'Substituição direta',
-        points: '2,0 pontos',
-        type: 'multiple_choice',
-        statement: 'Qual é o valor de lim x → 2 de (3x² − 2x + 1)?',
-        options: [
-            { id: 'A', label: 'A. 5' },
-            { id: 'B', label: 'B. 9' },
-            { id: 'C', label: 'C. 11' },
-            { id: 'D', label: 'D. O limite não existe' },
-        ],
-        correctAnswer: 'B',
-    },
-    {
-        id: 'q-2',
-        number: '02',
-        title: 'Resolva a indeterminação',
-        points: '4,0 pontos',
-        type: 'direct_result',
-        statement: 'Calcule o valor numérico exato de lim x → 3 de (x² − 9) / (x − 3).',
-        placeholder: 'Digite apenas o resultado numérico',
-        correctAnswer: '6',
-    },
-];
-
-const DEFAULT_LINKS = [
-    {
-        id: 'link-1',
-        kind: 'video',
-        kindLabel: 'Vídeo-aula',
-        title: 'Limites na prática — Explicação visual passo a passo',
-        url: 'https://www.youtube.com/watch?v=WUvTyaaNkzM',
-        source: 'YouTube • Canal Acadêmico UDESC',
-        duration: '18 min',
-        description: 'Aula em vídeo demonstrando a intuição geométrica e resolução comentada de exemplos.',
-    },
-    {
-        id: 'link-2',
-        kind: 'simulador',
-        kindLabel: 'Simulador interativo',
-        title: 'Laboratório interativo: explorando limites',
-        url: 'https://www.geogebra.org/m/r5ef2z5r',
-        source: 'GeoGebra Academy',
-        duration: 'Interativo',
-        description: 'Manipule parâmetros em tempo real e visualize gráficos dinamicamente no navegador.',
-    },
-];
-
 function formatFileSize(bytes) {
-    if (!bytes) return '842 KB';
+    if (!bytes) return '';
     if (bytes < 1024 * 1024) {
         return `${Math.max(1, Math.round(bytes / 1024))} KB`;
     }
     return `${(bytes / (1024 * 1024)).toFixed(1).replace('.', ',')} MB`;
+}
+
+function createEmptyQuestion(index = 1) {
+    const number = String(index).padStart(2, '0');
+    return {
+        id: `q-${Date.now()}-${index}`,
+        number,
+        title: '',
+        points: '',
+        type: 'multiple_choice',
+        statement: '',
+        options: [
+            { id: 'A', label: 'A. ' },
+            { id: 'B', label: 'B. ' },
+            { id: 'C', label: 'C. ' },
+            { id: 'D', label: 'D. ' },
+        ],
+        correctAnswer: 'A',
+    };
+}
+
+function createEmptyLink(index = 1) {
+    return {
+        id: `link-${Date.now()}-${index}`,
+        kind: 'site',
+        kindLabel: 'Artigo e guia',
+        title: '',
+        url: '',
+        source: '',
+        duration: '',
+        description: '',
+    };
 }
 
 function ContentForm() {
@@ -91,42 +72,32 @@ function ContentForm() {
 
     const isEdit = Boolean(id);
     const currentUser = loginService.getCurrentUser();
-    const userRole = String(currentUser?.role || 'aluno').toLowerCase();
+    const userRole = String(currentUser?.role || '').toLowerCase();
     const isProfessor = userRole === 'professor';
-    const authorName = currentUser?.name || (isProfessor ? 'Profa. Ana Martins' : 'Mariana Costa');
+    const authorName = currentUser?.name || '';
 
     const [subjectsList, setSubjectsList] = useState([]);
-    const [title, setTitle] = useState('Resumo — Limites e continuidade');
-    const [subjectTag, setSubjectTag] = useState(searchParams.get('disciplina') || 'CAL1001');
-    const [teacher, setTeacher] = useState('Profa. Ana Martins');
+    const [title, setTitle] = useState('');
+    const [subjectTag, setSubjectTag] = useState(searchParams.get('disciplina') || '');
+    const [teacher, setTeacher] = useState('');
     const [resourceType, setResourceType] = useState('arquivo');
 
-    // Estado para tipo Arquivo (Drag & Drop)
     const [isDragging, setIsDragging] = useState(false);
-    const [uploadedFile, setUploadedFile] = useState({
-        name: 'resumo_limites_mariana.pdf',
-        size: '842 KB',
-        url: null,
-    });
+    const [uploadedFile, setUploadedFile] = useState(null);
 
-    // Estado para tipo Exercício (questões para correção automática)
-    const [questions, setQuestions] = useState(DEFAULT_QUESTIONS);
+    const [questions, setQuestions] = useState(() => [createEmptyQuestion(1)]);
+    const [links, setLinks] = useState(() => [createEmptyLink(1)]);
 
-    // Estado para tipo Link (múltiplos links com título e descrição)
-    const [links, setLinks] = useState(DEFAULT_LINKS);
-
-    // Campos comuns do rodapé
-    const [description, setDescription] = useState(
-        'Resumo autoral sobre limites, limites laterais e continuidade, com exemplos resolvidos para revisão da Prova 1.'
-    );
-    const [supportUrl, setSupportUrl] = useState('https://www.geogebra.org/graphing');
-    const [citation, setCitation] = useState(`Material autoral de ${authorName}`);
+    // Campos comuns do rodapé (sem valores pré-setados)
+    const [description, setDescription] = useState('');
+    const [supportUrl, setSupportUrl] = useState('');
+    const [citation, setCitation] = useState('');
 
     // Banner lateral de confirmação/status
     const [statusBanner, setStatusBanner] = useState({
-        visible: true,
-        code: 'SOL-024',
-        submittedAt: '20 out. 2026, às 14h20',
+        visible: false,
+        code: '',
+        submittedAt: '',
     });
 
     useEffect(() => {
@@ -138,8 +109,8 @@ function ContentForm() {
                 const existing = await subjectService.getContributionById(id);
                 if (existing) {
                     setTitle(existing.title || '');
-                    setSubjectTag(existing.subjectTag || 'CAL1001');
-                    setTeacher(existing.teacher || 'Profa. Ana Martins');
+                    setSubjectTag(existing.subjectTag || '');
+                    setTeacher(existing.teacher || '');
                     setResourceType(existing.resourceType || 'arquivo');
                     setDescription(existing.description || '');
                     setSupportUrl(existing.supportUrl || '');
@@ -147,7 +118,7 @@ function ContentForm() {
                     if (existing.fileName) {
                         setUploadedFile({
                             name: existing.fileName,
-                            size: existing.fileSize || '842 KB',
+                            size: existing.fileSize || '',
                             url: existing.fileUrl || null,
                         });
                     }
@@ -157,11 +128,13 @@ function ContentForm() {
                     if (existing.links?.length) {
                         setLinks(existing.links);
                     }
-                    setStatusBanner({
-                        visible: true,
-                        code: existing.requestCode || 'SOL-024',
-                        submittedAt: existing.submittedAt || '20 out. 2026, às 14h20',
-                    });
+                    if (existing.requestCode || existing.submittedAt) {
+                        setStatusBanner({
+                            visible: true,
+                            code: existing.requestCode || '',
+                            submittedAt: existing.submittedAt || '',
+                        });
+                    }
                 }
             } else {
                 const preselectedTag = searchParams.get('disciplina');
@@ -207,25 +180,7 @@ function ContentForm() {
 
     // Handlers do construtor de Exercícios
     const handleAddQuestion = () => {
-        const nextNum = String(questions.length + 1).padStart(2, '0');
-        setQuestions((prev) => [
-            ...prev,
-            {
-                id: `q-${Date.now()}`,
-                number: nextNum,
-                title: `Questão ${nextNum}`,
-                points: '2,0 pontos',
-                type: 'multiple_choice',
-                statement: '',
-                options: [
-                    { id: 'A', label: 'A. ' },
-                    { id: 'B', label: 'B. ' },
-                    { id: 'C', label: 'C. ' },
-                    { id: 'D', label: 'D. ' },
-                ],
-                correctAnswer: 'A',
-            },
-        ]);
+        setQuestions((prev) => [...prev, createEmptyQuestion(prev.length + 1)]);
     };
 
     const handleUpdateQuestion = (qId, patch) => {
@@ -262,19 +217,7 @@ function ContentForm() {
 
     // Handlers do construtor de Links
     const handleAddLink = () => {
-        setLinks((prev) => [
-            ...prev,
-            {
-                id: `link-${Date.now()}`,
-                kind: 'site',
-                kindLabel: 'Artigo e guia',
-                title: '',
-                url: '',
-                source: 'Referência externa',
-                duration: 'Leitura',
-                description: '',
-            },
-        ]);
+        setLinks((prev) => [...prev, createEmptyLink(prev.length + 1)]);
     };
 
     const handleUpdateLink = (linkId, patch) => {
@@ -330,17 +273,12 @@ function ContentForm() {
         }, 700);
     };
 
-    const subjectOptions = subjectsList.length
-        ? subjectsList.map((s) => ({ value: s.tag, label: s.label }))
-        : [{ value: 'CAL1001', label: 'Cálculo I — CAL1001' }];
+    const subjectOptions = subjectsList.map((s) => ({ value: s.tag, label: s.label }));
 
     const teacherOptions = [...new Set(subjectsList.map((s) => s.teacher))].map((t) => ({
         value: t,
         label: t,
     }));
-    if (!teacherOptions.length) {
-        teacherOptions.push({ value: 'Profa. Ana Martins', label: 'Profa. Ana Martins' });
-    }
 
     const breadcrumbs = [
         { label: 'Espaço acadêmico', href: '/home' },
@@ -669,7 +607,7 @@ function ContentForm() {
                                                     <Button
                                                         type="button"
                                                         size="small"
-                                                        onClick={() => handleUpdateQuestion(q.id, { type: 'direct_result', correctAnswer: '6' })}
+                                                        onClick={() => handleUpdateQuestion(q.id, { type: 'direct_result', correctAnswer: '' })}
                                                         sx={{
                                                             textTransform: 'none',
                                                             fontSize: 11,

@@ -9,10 +9,10 @@ import PrimaryButton from '../components/common/PrimaryButton';
 import subjectService from '../services/subjectService';
 
 const PAGE_SIZE = 6;
-const DEFAULT_FILTERS = { search: '', course: 'cc', subject: '', teacher: '' };
+const DEFAULT_FILTERS = { search: '', course: '', subject: '', teacher: '' };
 const BREADCRUMBS = [
     { label: 'Espaço acadêmico', href: '/home' },
-    { label: 'Explorar disciplinas' },
+    { label: 'Disciplinas' },
 ];
 
 function Explore() {
